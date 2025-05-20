@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "911730583027",
+    "project_id": "wasteposal-c1fe3afa",
+    "storage_bucket": "wasteposal-c1fe3afa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911730583027:android:6f1b4089dcd592cd6a5e86",
+        "android_client_info": {
+          "package_name": "com.example.wasteposal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911730583027-kg57nq8msiop60m1plulfoftt2euu10h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wasteposal",
+            "certificate_hash": "110cfbfc528e9732114eb371b37d714ab829d79d"
+          }
+        },
+        {
+          "client_id": "911730583027-7m409qrlhamjb3j6lrqu2468t4t9outp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXlpMIcGMrXZZsNTElyN57bnWPMFdX300"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911730583027-7m409qrlhamjb3j6lrqu2468t4t9outp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

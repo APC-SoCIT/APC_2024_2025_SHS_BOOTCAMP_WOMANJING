@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Wasteposal</string>
+    <string-array name="city_array">
+        <item>---- Please Select ----</item>
+        <item>Makati</item>
+    </string-array>
+
+    <string-array name="barangay_array">
+        <item>---- Please Select ----</item>
+        <item>Magallanes</item>
+    </string-array>
+
+</resources>
