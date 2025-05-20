@@ -86,10 +86,10 @@ public class login extends AppCompatActivity {
                                             String role = snapshot.child("role").getValue(String.class);
                                             if ("admin".equalsIgnoreCase(role)) {
                                                 Toast.makeText(login.this, "Admin login successful", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(login.this, gcdashboard.class));
+                                                startActivity(new Intent(login.this, gc_dashboard.class));
                                             } else {
                                                 Toast.makeText(login.this, "Resident login successful", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(login.this, dashboard.class));
+                                                startActivity(new Intent(login.this, r_dashboard.class));
                                             }
                                             finish();
                                         } else {

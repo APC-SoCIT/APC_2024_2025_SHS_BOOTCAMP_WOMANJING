@@ -16,10 +16,10 @@
             android:name=".signup"
             android:exported="false" />
         <activity
-            android:name=".dashboard"
+            android:name=".r_dashboard"
             android:exported="true" />
         <activity
-            android:name=".gcdashboard"
+            android:name=".gc_dashboard"
             android:exported="true" />
         <activity
             android:name=".r_schedule"

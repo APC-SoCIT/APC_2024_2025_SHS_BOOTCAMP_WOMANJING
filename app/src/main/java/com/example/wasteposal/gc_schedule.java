@@ -3,10 +3,10 @@ package com.example.wasteposal;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class r_schedule extends AppCompatActivity {
+public class gc_schedule extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.r_schedule);
+        setContentView(R.layout.gc_schedule);
     }
 }
