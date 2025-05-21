@@ -14,8 +14,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 public class login extends AppCompatActivity {
@@ -24,8 +22,7 @@ public class login extends AppCompatActivity {
     private Button loginButton;
     private TextView dontHaveAccount;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
+    private DatabaseReference rootRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +36,10 @@ public class login extends AppCompatActivity {
             return insets;
         });
 
-        // Firebase
-        mAuth = FirebaseAuth.getInstance();
-        userRef = FirebaseDatabase
+        rootRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference("Users");
+                .getReference();
 
-        // Views
         mobileNumEditText = findViewById(R.id.mobilenum);
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
@@ -54,7 +48,6 @@ public class login extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             String mobile = mobileNumEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
-            String email = mobile + "@wasteposal.com";
 
             if (TextUtils.isEmpty(mobile)) {
                 mobileNumEditText.setError("Mobile number is required");
@@ -66,51 +59,65 @@ public class login extends AppCompatActivity {
                 return;
             }
 
-            if (password.length() < 6) {
-                passwordEditText.setError("Password must be at least 6 characters");
-                return;
-            }
-
-            // Resident or Collector
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
-                                String uid = user.getUid();
-
-                                userRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot snapshot) {
-                                        if (snapshot.exists()) {
-                                            String role = snapshot.child("role").getValue(String.class);
-                                            if ("admin".equalsIgnoreCase(role)) {
-                                                Toast.makeText(login.this, "Admin login successful", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(login.this, gc_dashboard.class));
-                                            } else {
-                                                Toast.makeText(login.this, "Resident login successful", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(login.this, r_dashboard.class));
-                                            }
-                                            finish();
-                                        } else {
-                                            Toast.makeText(login.this, "User data not found in Realtime Database", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError error) {
-                                        Toast.makeText(login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        } else {
-                            Toast.makeText(login.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            // Search for user with mobile number
+            findUserByMobile(mobile, password);
         });
 
         dontHaveAccount.setOnClickListener(v -> {
             startActivity(new Intent(login.this, signup.class));
+        });
+    }
+
+    private void findUserByMobile(String mobile, String inputPassword) {
+        // We need to search all cities because user data is nested by City -> Barangay -> User -> uid
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            boolean found = false;
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot citySnapshot : snapshot.getChildren()) {
+                    if (found) break;
+
+                    for (DataSnapshot barangaySnapshot : citySnapshot.getChildren()) {
+                        if (found) break;
+
+                        DataSnapshot usersSnapshot = barangaySnapshot.child("User");
+                        if (usersSnapshot.exists()) {
+                            for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
+                                String storedMobile = userSnapshot.child("mobile").getValue(String.class);
+                                String storedPassword = userSnapshot.child("password").getValue(String.class);
+                                String role = userSnapshot.child("role").getValue(String.class);
+
+                                if (mobile.equals(storedMobile)) {
+                                    found = true;
+                                    if (storedPassword != null && storedPassword.equals(inputPassword)) {
+                                        // Login success
+                                        if ("admin".equalsIgnoreCase(role)) {
+                                            Toast.makeText(login.this, "Admin login successful", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(login.this, gc_dashboard.class));
+                                        } else {
+                                            Toast.makeText(login.this, "Resident login successful", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(login.this, r_dashboard.class));
+                                        }
+                                        finish();
+                                    } else {
+                                        Toast.makeText(login.this, "Incorrect password", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!found) {
+                    Toast.makeText(login.this, "User not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

@@ -15,18 +15,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
 public class signup extends AppCompatActivity {
-    private EditText emailField, passwordField;
+
+    private EditText mobileField, passwordField, addressField;
     private Spinner spinnerCity, spinnerBarangay;
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +31,15 @@ public class signup extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.signup);
 
-        mAuth = FirebaseAuth.getInstance();
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        emailField = findViewById(R.id.editTextMobile);
+        mobileField = findViewById(R.id.editTextMobile);
         passwordField = findViewById(R.id.editTextPassword);
+        addressField = findViewById(R.id.editTextAddress);
         spinnerCity = findViewById(R.id.spinnerCity);
         spinnerBarangay = findViewById(R.id.spinnerBarangay);
 
@@ -66,13 +62,14 @@ public class signup extends AppCompatActivity {
     }
 
     public void signup(View view) {
-        String mobile = emailField.getText().toString().trim();
+        String mobile = mobileField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
-        String city = spinnerCity.getSelectedItem().toString();
-        String barangay = spinnerBarangay.getSelectedItem().toString();
+        String address = addressField.getText().toString().trim();
+        String city = spinnerCity.getSelectedItem().toString().trim();
+        String barangay = spinnerBarangay.getSelectedItem().toString().trim();
 
-        if (mobile.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter both mobile number and password", Toast.LENGTH_SHORT).show();
+        if (mobile.isEmpty() || password.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -81,38 +78,30 @@ public class signup extends AppCompatActivity {
             return;
         }
 
-        String getMobNum = mobile;
+        // Database structure
+        HashMap<String, Object> userData = new HashMap<>();
+        userData.put("address", address);
+        userData.put("mobile", mobile);
+        userData.put("password", password);
+        userData.put("role", "resident");
 
-        mAuth.createUserWithEmailAndPassword(getMobNum, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null) {
-                            String uid = firebaseUser.getUid();
+        DatabaseReference database = FirebaseDatabase
+                .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference();
 
-                            userRef = FirebaseDatabase
-                                    .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                                    .getReference("Users");
-
-                            HashMap<String, Object> userData = new HashMap<>();
-                            userData.put("mobile", mobile);
-                            userData.put("city", city);
-                            userData.put("barangay", barangay);
-                            userData.put("role", "resident");
-
-                            userRef.child(uid).setValue(userData)
-                                    .addOnSuccessListener(unused -> {
-                                        Toast.makeText(signup.this, "Signup Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(signup.this, login.class));
-                                        finish();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(signup.this, "Database write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    });
-                        }
-                    } else {
-                        Toast.makeText(signup.this, "Signup Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
+        // Save data under: City -> Barangay -> User -> <unique id>
+        database.child(city)
+                .child(barangay)
+                .child("User")
+                .push()
+                .setValue(userData)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(signup.this, "Signup Successful", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(signup.this, login.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(signup.this, "Database write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 }

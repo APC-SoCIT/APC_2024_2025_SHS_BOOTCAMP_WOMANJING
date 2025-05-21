@@ -71,7 +71,7 @@
                     android:text="Add Delay"
                     android:textSize="14sp"
                     android:textColor="@android:color/white"
-                    android:backgroundTint="@color/darkgreen"
+                    android:backgroundTint="@color/lightgreen"
                     app:cornerRadius="12dp"
                     app:icon="@mipmap/delay_icon_foreground"
                     app:iconGravity="textStart"
