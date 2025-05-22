@@ -38,5 +38,15 @@ public class r_dashboard extends AppCompatActivity {
                 }
             });
         }
+        LinearLayout reportButton = findViewById(R.id.report_button);
+        if (reportButton != null) {
+            reportButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(r_dashboard.this, report.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 }

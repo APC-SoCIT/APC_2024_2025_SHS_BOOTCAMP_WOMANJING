@@ -92,8 +92,8 @@ public class login extends AppCompatActivity {
                                     found = true;
                                     if (storedPassword != null && storedPassword.equals(inputPassword)) {
                                         // Login success
-                                        if ("admin".equalsIgnoreCase(role)) {
-                                            Toast.makeText(login.this, "Admin login successful", Toast.LENGTH_SHORT).show();
+                                        if ("collector".equalsIgnoreCase(role)) {
+                                            Toast.makeText(login.this, "Collector login successful", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(login.this, gc_dashboard.class));
                                         } else {
                                             Toast.makeText(login.this, "Resident login successful", Toast.LENGTH_SHORT).show();

@@ -25,6 +25,12 @@
             android:name=".r_schedule"
             android:exported="true" />
         <activity
+            android:name=".gc_schedule"
+            android:exported="true" />
+        <activity
+            android:name=".report"
+            android:exported="true" />
+        <activity
             android:name=".login"
             android:exported="true">
             <intent-filter>

@@ -8,7 +8,7 @@
     android:background="@drawable/dashboard_layout"
     tools:context=".gc_dashboard">
 
-    <!--chedule Box -->
+    <!--Schedule Box -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="wrap_content"
