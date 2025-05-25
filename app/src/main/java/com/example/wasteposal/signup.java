@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -78,30 +79,37 @@ public class signup extends AppCompatActivity {
             return;
         }
 
-        // Database structure
-        HashMap<String, Object> userData = new HashMap<>();
-        userData.put("address", address);
-        userData.put("mobile", mobile);
-        userData.put("password", password);
-        userData.put("role", "resident");
-
-        DatabaseReference database = FirebaseDatabase
+        DatabaseReference userRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference();
-
-        // Save data under: City -> Barangay -> User -> <unique id>
-        database.child(city)
+                .getReference()
+                .child(city)
                 .child(barangay)
-                .child("User")
-                .push()
-                .setValue(userData)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(signup.this, "Signup Successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(signup.this, login.class));
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(signup.this, "Database write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                .child("User");
+
+        userRef.get().addOnSuccessListener(snapshot -> {
+            long count = snapshot.getChildrenCount();
+            long nextNumber = count + 1;
+            String userId = String.format("01-%04d", nextNumber); // Format: 01-0001
+
+            HashMap<String, Object> userData = new HashMap<>();
+            userData.put("address", address);
+            userData.put("mobile", mobile);
+            userData.put("password", password);
+            userData.put("role", "resident");
+
+            userRef.child(userId)
+                    .setValue(userData)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(signup.this, "Signup Successful", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(signup.this, login.class));
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(signup.this, "Database write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
+        }).addOnFailureListener(e -> {
+            Toast.makeText(signup.this, "Failed to read users: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        });
     }
 }
