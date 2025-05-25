@@ -109,6 +109,8 @@ public class gc_schedule extends AppCompatActivity {
             List<AreaSchedule> schedules = groupedData.get(day);
             if (schedules == null || schedules.isEmpty()) continue;
 
+            sortSchedulesByFromTime(schedules);
+
             TextView dayHeader = new TextView(this);
             dayHeader.setText(day);
             dayHeader.setTextSize(35f);
@@ -123,7 +125,30 @@ public class gc_schedule extends AppCompatActivity {
             }
         }
     }
+    // Convert time to 12-hour format
+    private String convertTo12HourFormat(String time24) {
+        try {
+            java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
+            java.text.SimpleDateFormat sdf12 = new java.text.SimpleDateFormat("hh:mm a");
+            java.util.Date date = sdf24.parse(time24);
+            return sdf12.format(date);
+        } catch (Exception e) {
+            return time24;
+        }
+    }
+    private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
+        java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
 
+        schedules.sort((a, b) -> {
+            try {
+                java.util.Date timeA = sdf24.parse(a.schedule.from);
+                java.util.Date timeB = sdf24.parse(b.schedule.from);
+                return timeA.compareTo(timeB);
+            } catch (Exception e) {
+                return 0; // fallback, no change
+            }
+        });
+    }
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.gc_area_schedule_card, scheduleContainer, false);
@@ -133,7 +158,9 @@ public class gc_schedule extends AppCompatActivity {
         TextView status = cardView.findViewById(R.id.tvStatus);
         Button btnStatusAction = cardView.findViewById(R.id.btnStatusAction);
 
-        timeRange.setText(areaSchedule.schedule.from + " - " + areaSchedule.schedule.to);
+        String fromTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
+        String toTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
+        timeRange.setText(fromTimeFormatted + " - " + toTimeFormatted);
         areaName.setText(areaSchedule.areaName);
 
         String statusValue = areaSchedule.schedule.status;
