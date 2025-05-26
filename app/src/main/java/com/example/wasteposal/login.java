@@ -69,7 +69,6 @@ public class login extends AppCompatActivity {
     }
 
     private void findUserByMobile(String mobile, String inputPassword) {
-        // We need to search all cities because user data is nested by City -> Barangay -> User -> uid
         rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             boolean found = false;
 
@@ -78,8 +77,12 @@ public class login extends AppCompatActivity {
                 for (DataSnapshot citySnapshot : snapshot.getChildren()) {
                     if (found) break;
 
+                    String city = citySnapshot.getKey(); // Get city name
+
                     for (DataSnapshot barangaySnapshot : citySnapshot.getChildren()) {
                         if (found) break;
+
+                        String barangay = barangaySnapshot.getKey(); // Get barangay name
 
                         DataSnapshot usersSnapshot = barangaySnapshot.child("User");
                         if (usersSnapshot.exists()) {
@@ -90,8 +93,21 @@ public class login extends AppCompatActivity {
 
                                 if (mobile.equals(storedMobile)) {
                                     found = true;
+
                                     if (storedPassword != null && storedPassword.equals(inputPassword)) {
-                                        // Login success
+                                        // ✅ Save data to SharedPreferences
+                                        String userId = userSnapshot.getKey();
+                                        String address = userSnapshot.child("address").getValue(String.class);
+
+                                        getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                                .edit()
+                                                .putString("userId", userId)
+                                                .putString("city", city)
+                                                .putString("barangay", barangay)
+                                                .putString("address", address)
+                                                .apply();
+
+                                        // ✅ Redirect based on role
                                         if ("collector".equalsIgnoreCase(role)) {
                                             Toast.makeText(login.this, "Collector login successful", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(login.this, gc_dashboard.class));
@@ -99,6 +115,7 @@ public class login extends AppCompatActivity {
                                             Toast.makeText(login.this, "Resident login successful", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(login.this, r_dashboard.class));
                                         }
+
                                         finish();
                                     } else {
                                         Toast.makeText(login.this, "Incorrect password", Toast.LENGTH_SHORT).show();
