@@ -17,6 +17,7 @@
         android:gravity="center_vertical">
 
         <ImageView
+            android:id="@+id/StatusIcon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/track_icon" />
@@ -57,7 +58,7 @@
             android:id="@+id/btnStatusAction"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
-            android:text="Notify"
+            android:text="Pending"
             android:textSize="18dp"
             android:textColor="@android:color/white"
             android:backgroundTint="@color/darkgreen"

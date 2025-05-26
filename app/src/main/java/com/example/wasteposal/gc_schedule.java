@@ -6,9 +6,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.core.content.ContextCompat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class gc_schedule extends AppCompatActivity {
 
@@ -56,16 +56,19 @@ public class gc_schedule extends AppCompatActivity {
 
                 for (DataSnapshot areaSnap : snapshot.getChildren()) {
                     String areaName = areaSnap.getKey();
-                    Schedule schedule = areaSnap.getValue(Schedule.class);
-                    if (schedule == null) continue;
 
-                    if (schedule.days != null) {
-                        for (String day : schedule.days) {
-                            String normalizedDay = normalizeDay(day);
-                            if (normalizedDay.isEmpty()) continue;
-                            groupedByDay.putIfAbsent(normalizedDay, new ArrayList<>());
-                            groupedByDay.get(normalizedDay).add(new AreaSchedule(areaName, schedule));
+                    for (DataSnapshot daySnap : areaSnap.getChildren()) {
+                        String rawDay = daySnap.getKey(); // e.g., Mon
+                        String normalizedDay = normalizeDay(rawDay);
+                        if (normalizedDay.isEmpty()) continue;
+
+                        Schedule schedule = daySnap.getValue(Schedule.class);
+                        if (schedule == null || schedule.from == null || schedule.to == null || schedule.from.isEmpty() || schedule.to.isEmpty()) {
+                            continue;
                         }
+
+                        groupedByDay.putIfAbsent(normalizedDay, new ArrayList<>());
+                        groupedByDay.get(normalizedDay).add(new AreaSchedule(areaName, rawDay, schedule));
                     }
                 }
 
@@ -84,21 +87,20 @@ public class gc_schedule extends AppCompatActivity {
         day = day.trim().toLowerCase();
         switch (day) {
             case "sun":
-                return "Sunday";
+            case "sunday": return "Sunday";
             case "mon":
-                return "Monday";
+            case "monday": return "Monday";
             case "tue":
-                return "Tuesday";
+            case "tuesday": return "Tuesday";
             case "wed":
-                return "Wednesday";
+            case "wednesday": return "Wednesday";
             case "thu":
-                return "Thursday";
+            case "thursday": return "Thursday";
             case "fri":
-                return "Friday";
+            case "friday": return "Friday";
             case "sat":
-                return "Saturday";
-            default:
-                return "";
+            case "saturday": return "Saturday";
+            default: return "";
         }
     }
 
@@ -125,30 +127,49 @@ public class gc_schedule extends AppCompatActivity {
             }
         }
     }
-    // Convert time to 12-hour format
+
+    private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
+        SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        schedules.sort((a, b) -> {
+            try {
+                Date timeA = sdf24.parse(a.schedule.from);
+                Date timeB = sdf24.parse(b.schedule.from);
+                return timeA.compareTo(timeB);
+            } catch (Exception e) {
+                return 0;
+            }
+        });
+    }
+
     private String convertTo12HourFormat(String time24) {
         try {
-            java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
-            java.text.SimpleDateFormat sdf12 = new java.text.SimpleDateFormat("hh:mm a");
-            java.util.Date date = sdf24.parse(time24);
+            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf24.parse(time24);
             return sdf12.format(date);
         } catch (Exception e) {
             return time24;
         }
     }
-    private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
-        java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
 
-        schedules.sort((a, b) -> {
-            try {
-                java.util.Date timeA = sdf24.parse(a.schedule.from);
-                java.util.Date timeB = sdf24.parse(b.schedule.from);
-                return timeA.compareTo(timeB);
-            } catch (Exception e) {
-                return 0; // fallback, no change
-            }
-        });
+    private void updateStatusIcon(ImageView iconView, String status) {
+        switch (status.toLowerCase()) {
+            case "scheduled":
+                iconView.setImageResource(R.drawable.scheduled_icon);
+                break;
+            case "in-progress":
+                iconView.setImageResource(R.drawable.in_progress_icon);
+                break;
+            case "done":
+                iconView.setImageResource(R.drawable.done_icon);
+                break;
+            default:
+                iconView.setImageResource(R.drawable.track_icon); // fallback
+                break;
+        }
     }
+
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.gc_area_schedule_card, scheduleContainer, false);
@@ -157,6 +178,7 @@ public class gc_schedule extends AppCompatActivity {
         TextView areaName = cardView.findViewById(R.id.tvArea);
         TextView status = cardView.findViewById(R.id.tvStatus);
         Button btnStatusAction = cardView.findViewById(R.id.btnStatusAction);
+        ImageView statusIcon = cardView.findViewById(R.id.StatusIcon);
 
         String fromTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
         String toTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
@@ -168,45 +190,47 @@ public class gc_schedule extends AppCompatActivity {
 
         status.setText(capitalizeStatus(statusValue));
         updateButtonAppearance(btnStatusAction, statusValue);
+        updateStatusIcon(statusIcon, statusValue);
 
         btnStatusAction.setOnClickListener(v -> {
             String currentStatus = areaSchedule.schedule.status;
             if (currentStatus == null) currentStatus = "scheduled";
 
-            // Button status
             String newStatus;
             switch (currentStatus) {
                 case "scheduled":
-                    newStatus = "ongoing";
+                    newStatus = "in-progress";
                     break;
-                case "ongoing":
+                case "in-progress":
                     newStatus = "done";
                     break;
                 case "done":
-                    newStatus = "scheduled";
-                    break;
                 default:
                     newStatus = "scheduled";
+                    break;
             }
 
             // Update Firebase
-            scheduleRef.child(areaSchedule.areaName).child("status").setValue(newStatus);
+            scheduleRef.child(areaSchedule.areaName)
+                    .child(areaSchedule.day)
+                    .child("status")
+                    .setValue(newStatus);
 
-            // Update model locally
+            // Update UI and model
             areaSchedule.schedule.status = newStatus;
-
-            // Update UI
             status.setText(capitalizeStatus(newStatus));
             updateButtonAppearance(btnStatusAction, newStatus);
+            updateStatusIcon(statusIcon, newStatus);
         });
 
         return cardView;
     }
 
+
     private String capitalizeStatus(String status) {
         switch (status) {
             case "scheduled": return "Scheduled";
-            case "ongoing": return "Ongoing";
+            case "in-progress": return "In-Progress";
             case "done": return "Done";
             default: return "Unknown";
         }
@@ -214,31 +238,31 @@ public class gc_schedule extends AppCompatActivity {
 
     private void updateButtonAppearance(Button button, String status) {
         switch (status) {
-            case "scheduled": // Notify state
+            case "scheduled":
                 button.setText("Notify");
-                button.setBackgroundTintList(getResources().getColorStateList(R.color.darkgreen));
+                button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.darkgreen));
                 button.setEnabled(true);
                 break;
-            case "ongoing":   // Complete state
-                button.setText("Complete");
-                button.setBackgroundTintList(getResources().getColorStateList(R.color.lightgreen));
+            case "in-progress":
+                button.setText("Done?");
+                button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.lightgreen));
                 button.setEnabled(true);
                 break;
-            case "done":      // Completed state
-                button.setText("Completed");
-                button.setBackgroundTintList(getResources().getColorStateList(R.color.lightgrey));
+            case "done":
+                button.setText("Done");
+                button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.lightgrey));
                 button.setEnabled(true);
                 break;
             default:
                 button.setText("Unknown");
-                button.setBackgroundTintList(getResources().getColorStateList(R.color.lightgrey));
+                button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.lightgrey));
                 button.setEnabled(false);
                 break;
         }
     }
 
+    // Data model classes
     public static class Schedule {
-        public List<String> days;
         public String from;
         public String to;
         public String status;
@@ -248,10 +272,12 @@ public class gc_schedule extends AppCompatActivity {
 
     public static class AreaSchedule {
         public String areaName;
+        public String day; // e.g., "Mon", "Tue"
         public Schedule schedule;
 
-        public AreaSchedule(String areaName, Schedule schedule) {
+        public AreaSchedule(String areaName, String day, Schedule schedule) {
             this.areaName = areaName;
+            this.day = day;
             this.schedule = schedule;
         }
     }

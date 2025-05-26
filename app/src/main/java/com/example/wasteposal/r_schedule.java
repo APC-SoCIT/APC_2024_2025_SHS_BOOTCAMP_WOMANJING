@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,10 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class r_schedule extends AppCompatActivity {
 
@@ -43,8 +42,8 @@ public class r_schedule extends AppCompatActivity {
         scheduleContainer = findViewById(R.id.scheduleContainer);
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app");
         scheduleRef = db.getReference(city).child(barangay).child("Areas");
-        Log.d("r_schedule", "loadScheduleData called");
-        Toast.makeText(this, "Loading data...", Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(this, "Loading schedule...", Toast.LENGTH_SHORT).show();
 
         loadScheduleData();
     }
@@ -57,38 +56,25 @@ public class r_schedule extends AppCompatActivity {
 
                 for (DataSnapshot areaSnap : snapshot.getChildren()) {
                     String areaName = areaSnap.getKey();
-                    Log.d("FIREBASE", "Area Name: " + areaName);
 
-                    Schedule schedule = areaSnap.getValue(Schedule.class);
-                    if (schedule == null) {
-                        Log.w("FIREBASE", "Null schedule for area: " + areaName);
-                        continue;
-                    }
+                    for (DataSnapshot daySnap : areaSnap.getChildren()) {
+                        String dayKey = normalizeDay(daySnap.getKey());
+                        if (dayKey.isEmpty()) continue;
 
-                    if (schedule.days != null) {
-                        for (String day : schedule.days) {
-                            String normalizedDay = normalizeDay(day);
-                            if(normalizedDay.isEmpty()) {
-                                Log.w("r_schedule", "Unknown day name '" + day + "' for area: " + areaName);
-                                continue;
-                            }
-                            groupedByDay.putIfAbsent(normalizedDay, new ArrayList<>());
-                            groupedByDay.get(normalizedDay).add(new AreaSchedule(areaName, schedule));
-                            Log.d("FIREBASE", "Added schedule for: " + areaName + " on " + normalizedDay);
-                        }
-                    } else {
-                        Log.w("FIREBASE", "Days list is null for area: " + areaName);
+                        Schedule schedule = daySnap.getValue(Schedule.class);
+                        if (schedule == null) continue;
+
+                        groupedByDay.putIfAbsent(dayKey, new ArrayList<>());
+                        groupedByDay.get(dayKey).add(new AreaSchedule(areaName, schedule));
                     }
                 }
 
-                Log.d("r_schedule", "Grouped days from Firebase: " + groupedByDay.keySet());
                 displayGroupedSchedule(groupedByDay);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(r_schedule.this, "Failed to load data", Toast.LENGTH_SHORT).show();
-                Log.e("FIREBASE", "Database error: " + error.getMessage());
             }
         });
     }
@@ -97,22 +83,14 @@ public class r_schedule extends AppCompatActivity {
         if (day == null) return "";
         day = day.trim().toLowerCase();
         switch (day) {
-            case "sun":
-                return "Sunday";
-            case "mon":
-                return "Monday";
-            case "tue":
-                return "Tuesday";
-            case "wed":
-                return "Wednesday";
-            case "thu":
-                return "Thursday";
-            case "fri":
-                return "Friday";
-            case "sat":
-                return "Saturday";
-            default:
-                return "";
+            case "sun": return "Sunday";
+            case "mon": return "Monday";
+            case "tue": return "Tuesday";
+            case "wed": return "Wednesday";
+            case "thu": return "Thursday";
+            case "fri": return "Friday";
+            case "sat": return "Saturday";
+            default: return "";
         }
     }
 
@@ -121,8 +99,6 @@ public class r_schedule extends AppCompatActivity {
 
         for (String day : DAY_ORDER) {
             List<AreaSchedule> schedules = groupedData.get(day);
-            Log.d("r_schedule", "Displaying day: " + day + ", schedules found: " + (schedules == null ? 0 : schedules.size()));
-
             if (schedules == null || schedules.isEmpty()) continue;
 
             sortSchedulesByFromTime(schedules);
@@ -141,29 +117,32 @@ public class r_schedule extends AppCompatActivity {
             }
         }
     }
+
     private String convertTo12HourFormat(String time24) {
         try {
-            java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
-            java.text.SimpleDateFormat sdf12 = new java.text.SimpleDateFormat("hh:mm a");
-            java.util.Date date = sdf24.parse(time24);
+            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf24.parse(time24);
             return sdf12.format(date);
         } catch (Exception e) {
             return time24;
         }
     }
+
     private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
-        java.text.SimpleDateFormat sdf24 = new java.text.SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         schedules.sort((a, b) -> {
             try {
-                java.util.Date timeA = sdf24.parse(a.schedule.from);
-                java.util.Date timeB = sdf24.parse(b.schedule.from);
+                Date timeA = sdf24.parse(a.schedule.from);
+                Date timeB = sdf24.parse(b.schedule.from);
                 return timeA.compareTo(timeB);
             } catch (Exception e) {
-                return 0; // fallback, no change
+                return 0;
             }
         });
     }
+
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, scheduleContainer, false);
@@ -177,35 +156,45 @@ public class r_schedule extends AppCompatActivity {
         timeRange.setText(fromTimeFormatted + " - " + toTimeFormatted);
         areaName.setText(areaSchedule.areaName);
 
-        String statusValue = areaSchedule.schedule.status;
-        if (statusValue == null || statusValue.isEmpty()) {
-            statusValue = "Pending";
+        String currentStatus = areaSchedule.schedule.status;
+        if (currentStatus == null || currentStatus.isEmpty()) {
+            currentStatus = "Pending";
         }
-        status.setText(capitalizeStatus(statusValue));
+        status.setText(capitalizeStatus(currentStatus));
+        ImageView statusIcon = cardView.findViewById(R.id.StatusIcon);
+
+        switch (currentStatus.toLowerCase()) {
+            case "scheduled":
+                statusIcon.setImageResource(R.drawable.scheduled_icon);
+                break;
+            case "in-progress":
+                statusIcon.setImageResource(R.drawable.in_progress_icon);
+                break;
+            case "done":
+                statusIcon.setImageResource(R.drawable.done_icon);
+                break;
+            default:
+                statusIcon.setImageResource(R.drawable.track_icon); // fallback icon
+                break;
+        }
+
 
         return cardView;
     }
 
-    // 🔧 Fix: Add capitalizeStatus() here
     private String capitalizeStatus(String status) {
         if (status == null) return "Pending";
         switch (status.toLowerCase()) {
-            case "scheduled":
-                return "Scheduled";
-            case "ongoing":
-                return "Ongoing";
-            case "done":
-                return "Done";
-            case "pending":
-                return "Pending";
-            default:
-                return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+            case "scheduled": return "Scheduled";
+            case "in-progress": return "In-Progress";
+            case "done": return "Done";
+            case "pending": return "Pending";
+            default: return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
         }
     }
 
-    // 📦 Model Classes
+    // Model Classes
     public static class Schedule {
-        public List<String> days;
         public String from;
         public String to;
         public String status;
