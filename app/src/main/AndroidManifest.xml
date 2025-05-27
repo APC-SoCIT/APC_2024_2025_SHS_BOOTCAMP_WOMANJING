@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.wasteposal">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:required="false" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,32 +22,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wasteposal"
         tools:targetApi="31">
-        <activity
-            android:name=".signup"
-            android:exported="false" />
-        <activity
-            android:name=".r_dashboard"
-            android:exported="true" />
-        <activity
-            android:name=".gc_dashboard"
-            android:exported="true" />
-        <activity
-            android:name=".r_schedule"
-            android:exported="true" />
-        <activity
-            android:name=".gc_schedule"
-            android:exported="true" />
-        <activity
-            android:name=".report"
-            android:exported="true" />
-        <activity
-            android:name=".login"
-            android:exported="true">
+
+        <!-- Optional: Google Maps API key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAsIpYlSO8TezvgGaZTjgiIrFtFDRxmYvs" />
+
+        <!-- Activities -->
+        <activity android:name=".signup" android:exported="false" />
+        <activity android:name=".r_dashboard" android:exported="true" />
+        <activity android:name=".gc_dashboard" android:exported="true" />
+        <activity android:name=".r_schedule" android:exported="true" />
+        <activity android:name=".gc_schedule" android:exported="true" />
+        <activity android:name=".r_track" android:exported="true"/>
+        <activity android:name=".gc_track" android:exported="true"/>
+        <activity android:name=".report" android:exported="true" />
+        <activity android:name=".login" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

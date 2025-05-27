@@ -38,5 +38,11 @@ public class gc_dashboard extends AppCompatActivity {
                 }
             });
         }
+        // GC Track
+        LinearLayout trackBtn = findViewById(R.id.gc_track_btn);
+        trackBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(gc_dashboard.this, gc_track.class);
+            startActivity(intent);
+        });
     }
 }

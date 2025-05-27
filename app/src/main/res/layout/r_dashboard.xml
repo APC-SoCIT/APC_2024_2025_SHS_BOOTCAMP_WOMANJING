@@ -22,7 +22,6 @@
             android:layout_height="24dp"
             android:src="@drawable/user_icon" />
 
-        <!-- Top Text with Icon -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +32,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Track and Schedule Box -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContainer"
         android:layout_width="match_parent"
@@ -54,16 +52,21 @@
 
             <!-- TRACK -->
             <LinearLayout
+                android:id="@+id/r_track_button"
                 android:layout_width="0dp"
                 android:layout_height="180dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="177dp"
                     android:layout_height="122dp"
-                    android:src="@drawable/track_icon"/>
+                    android:src="@drawable/track_icon" />
 
                 <Space
                     android:layout_width="match_parent"
@@ -78,7 +81,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Divider -->
             <View
                 android:layout_width="1.5dp"
                 android:layout_height="180dp"
@@ -91,8 +93,11 @@
                 android:layout_height="181dp"
                 android:layout_weight="1"
                 android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="122dp"
@@ -113,7 +118,7 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <!-- Report Complaint and Inbox Transparent Buttons -->
+
     <LinearLayout
         android:id="@+id/bottomButtons"
         android:layout_width="match_parent"
@@ -136,7 +141,7 @@
             android:gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackground"
             android:padding="16dp">
 
             <ImageView
@@ -156,11 +161,12 @@
 
         <!-- Inbox -->
         <FrameLayout
+            android:id="@+id/inbox_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:padding="16dp">

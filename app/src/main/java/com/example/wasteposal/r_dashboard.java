@@ -38,6 +38,8 @@ public class r_dashboard extends AppCompatActivity {
                 }
             });
         }
+
+        // Report
         LinearLayout reportButton = findViewById(R.id.report_button);
         if (reportButton != null) {
             reportButton.setOnClickListener(new View.OnClickListener() {
@@ -48,5 +50,17 @@ public class r_dashboard extends AppCompatActivity {
                 }
             });
         }
+
+        // Report
+        LinearLayout trackButton = findViewById(R.id.r_track_button);
+        if (trackButton != null) {
+            trackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(r_dashboard.this, r_track.class);
+                    startActivity(intent);
+                }
+            });
+    }
     }
 }

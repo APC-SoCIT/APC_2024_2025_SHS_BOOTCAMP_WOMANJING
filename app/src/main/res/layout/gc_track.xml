@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_lat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Latitude"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_lon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Longitude"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_accuracy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accuracy"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_altitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Altitude"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_sensor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sensor Type"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_updates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Status"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/tv_countOfCrumbs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Waypoints Count"
+            android:textSize="16sp"
+            android:padding="4dp" />
+
+        <Switch
+            android:id="@+id/sw_locationsupdates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location Updates"
+            android:padding="8dp" />
+
+        <Switch
+            android:id="@+id/sw_gps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Use GPS"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btn_newWaypoint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Waypoint"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btn_showWayPointList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Waypoint List"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btn_showMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Map"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -94,6 +94,7 @@
 
         <!-- Report Complaint -->
         <LinearLayout
+            android:id="@+id/gc_track_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -108,13 +109,13 @@
             <ImageView
                 android:layout_width="61dp"
                 android:layout_height="55dp"
-                android:src="@drawable/report_icon" />
+                android:src="@drawable/track_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Contact\nCoordinator"
+                android:text="Manage\nTracker"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:textStyle="bold" />

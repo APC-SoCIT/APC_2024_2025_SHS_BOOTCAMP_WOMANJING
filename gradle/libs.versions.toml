@@ -1,27 +1,27 @@
 [versions]
 agp = "8.9.2"
 junit = "4.13.2"
-junit_version = "1.2.1"
-espresso_core = "3.6.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
-google_gms_google_services = "4.4.2"
-firebase_auth = "23.2.0"
-firebase_database = "21.0.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseAuth = "23.2.0"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-ext_junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit_version" }
-espresso_core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso_core" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-firebase_auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebase_auth" }
-firebase_database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebase_database" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
-android_application = { id = "com.android.application", version.ref = "agp" }
-google_gms_google_services = { id = "com.google.gms.google-services", version.ref = "google_gms_google_services" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
