@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-
+//Class fields
 public class report extends AppCompatActivity {
 
     private EditText complaintText;
@@ -28,7 +28,7 @@ public class report extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.report);
-
+//UI elements
         complaintText = findViewById(R.id.complaintText);
         submitButton = findViewById(R.id.loginButton); // Submit button
 
@@ -49,7 +49,7 @@ public class report extends AppCompatActivity {
 
         submitButton.setOnClickListener(v -> submitComplaint());
     }
-
+    //
     private void submitComplaint() {
         String message = complaintText.getText().toString().trim();
 
@@ -61,7 +61,7 @@ public class report extends AppCompatActivity {
         // Get current time as timestamp
         String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date());
 
-        // Count complaints under this user to generate complaintDisplayId
+        // Generate complaintDisplayID
         complaintsRef.child(userId).get().addOnSuccessListener(snapshot -> {
             long count = snapshot.getChildrenCount() + 1;
             String complaintDisplayId = userId + "-" + count;

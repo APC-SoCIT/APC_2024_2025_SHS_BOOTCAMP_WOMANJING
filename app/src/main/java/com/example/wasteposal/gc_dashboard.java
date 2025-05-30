@@ -1,9 +1,11 @@
 package com.example.wasteposal;
 
-import android.content.Intent; // <-- Add this
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout; // <-- Add this
+import android.widget.Button;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -38,11 +40,30 @@ public class gc_dashboard extends AppCompatActivity {
                 }
             });
         }
-        // GC Track
+
+        // Track
         LinearLayout trackBtn = findViewById(R.id.gc_track_btn);
-        trackBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(gc_dashboard.this, gc_track.class);
-            startActivity(intent);
-        });
+        if (trackBtn != null) {
+            trackBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(gc_dashboard.this, gc_track.class);
+                startActivity(intent);
+            });
+        }
+
+        // Logout
+        Button logoutButton = findViewById(R.id.logoutButton);
+        if (logoutButton != null) {
+            logoutButton.setOnClickListener(v -> {
+                getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                        .edit()
+                        .clear()
+                        .apply();
+
+                Intent intent = new Intent(gc_dashboard.this, login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
+        }
     }
 }

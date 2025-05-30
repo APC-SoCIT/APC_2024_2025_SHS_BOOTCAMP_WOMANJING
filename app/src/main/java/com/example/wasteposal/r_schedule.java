@@ -32,11 +32,14 @@ public class r_schedule extends AppCompatActivity {
     private static final String[] DAY_ORDER = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
-// Shows r_schedule
+    // Shows r_schedule
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.r_schedule);
+
+        // Enable Firebase local persistence once
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true); // ✅ Enables offline support
 
         // Get city and barangay from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -53,6 +56,26 @@ public class r_schedule extends AppCompatActivity {
         // Gets data from database
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app");
         scheduleRef = db.getReference(city).child(barangay).child("Areas");
+
+        // Keep schedule node in sync even offline
+        scheduleRef.keepSynced(true); // ✅ Keeps data synced locally
+
+        // Monitor connection status (optional)
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
+                if (connected) {
+                    Toast.makeText(r_schedule.this, "Connected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(r_schedule.this, "Offline Mode", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
 
         Toast.makeText(this, "Loading schedule...", Toast.LENGTH_SHORT).show();
 
@@ -89,7 +112,7 @@ public class r_schedule extends AppCompatActivity {
             }
         });
     }
-// Converts short strings from db to complete terms
+    // Converts short strings from db to complete terms
     private String normalizeDay(String day) {
         if (day == null) return "";
         day = day.trim().toLowerCase();
@@ -104,7 +127,7 @@ public class r_schedule extends AppCompatActivity {
             default: return "";
         }
     }
-// Organizes schedule by day, time, and area
+    // Organizes schedule by day, time, and area
     private void displayGroupedSchedule(Map<String, List<AreaSchedule>> groupedData) {
         scheduleContainer.removeAllViews();
 
@@ -128,7 +151,7 @@ public class r_schedule extends AppCompatActivity {
             }
         }
     }
-//Helper methods
+    //Helper methods
     // Converts to 12 Hour Format
     private String convertTo12HourFormat(String time24) {
         try {
@@ -140,7 +163,7 @@ public class r_schedule extends AppCompatActivity {
             return time24;
         }
     }
-// Sorts time for each area
+    // Sorts time for each area
     private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
@@ -154,7 +177,7 @@ public class r_schedule extends AppCompatActivity {
             }
         });
     }
-//Displays the schedule card
+    //Displays the schedule card
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, scheduleContainer, false);
@@ -189,7 +212,6 @@ public class r_schedule extends AppCompatActivity {
                 statusIcon.setImageResource(R.drawable.track_icon); // fallback icon
                 break;
         }
-
 
         return cardView;
     }

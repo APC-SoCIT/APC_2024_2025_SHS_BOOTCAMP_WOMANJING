@@ -1,6 +1,7 @@
 package com.example.wasteposal;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -28,6 +29,20 @@ public class login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            String userId = prefs.getString("userId", null);
+            if (userId != null && userId.startsWith("GC")) {
+                startActivity(new Intent(this, gc_dashboard.class));
+            } else {
+                startActivity(new Intent(this, r_dashboard.class));
+            }
+            finish();
+            return;
+        }
         setContentView(R.layout.login);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -105,6 +120,7 @@ public class login extends AppCompatActivity {
                                                 .putString("city", city)
                                                 .putString("barangay", barangay)
                                                 .putString("address", address)
+                                                .putBoolean("isLoggedIn", true)
                                                 .apply();
 
                                         // ✅ Redirect based on role

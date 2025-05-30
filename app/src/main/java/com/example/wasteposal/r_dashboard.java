@@ -1,14 +1,15 @@
 package com.example.wasteposal;
 
-import android.content.Intent; // <-- Add this
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout; // <-- Add this
+import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.widget.Button;
 
 public class r_dashboard extends AppCompatActivity {
     @Override
@@ -63,12 +64,28 @@ public class r_dashboard extends AppCompatActivity {
                 }
             });
     }
-
+        // Inbox
         FrameLayout inboxButton = findViewById(R.id.r_inbox_button);
         if (inboxButton != null) {
             inboxButton.setOnClickListener(v -> {
                 startActivity(new Intent(r_dashboard.this, r_inbox.class));
             });
         }
+        // Logout
+        Button logoutButton = findViewById(R.id.logoutButton);
+        if (logoutButton != null) {
+            logoutButton.setOnClickListener(v -> {
+                getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                        .edit()
+                        .clear()
+                        .apply();
+
+                Intent intent = new Intent(r_dashboard.this, login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
+        }
+
     }
 }
