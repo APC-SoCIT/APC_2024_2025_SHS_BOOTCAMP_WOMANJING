@@ -1,166 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="1080px"
-    android:layout_height="2400px"
-    android:orientation="vertical"
-    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/registragion_layout"
     tools:context=".signup">
 
-    <!-- Header Text -->
-
-    <!-- Registration Card -->
-    <TextView
-        android:layout_width="114dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginHorizontal="23dp"
-        android:layout_marginTop="80dp"
-        android:text="GARBAGE COLLECTION
-        TRACKER AND
-        SCHEDULE"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="19dp"/>
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="72dp"
-        android:background="@drawable/custom_edittext"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="20dp">
+        <!-- Header Text -->
+        <TextView
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="40dp"
+            android:text="GARBAGE COLLECTION\nTRACKER AND\nSCHEDULE"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
+        <!-- Registration Card -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:layout_marginTop="80dp"
+            android:background="@drawable/custom_edittext"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="10dp">
 
-            <!-- City Spinner -->
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Current City"
-                android:textSize="16dp"/>
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <Spinner
-                android:id="@+id/spinnerCity"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/custom_edittext"
-                android:padding="10dp"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                />
+                <!-- City Spinner -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Current City"
+                    android:textSize="16sp" />
 
-            <!-- Barangay Spinner -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Registered Barangay"
-                android:textSize="16dp" />
+                <Spinner
+                    android:id="@+id/spinnerCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:padding="10dp"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart" />
 
-            <Spinner
-                android:id="@+id/spinnerBarangay"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/custom_edittext"
-                android:padding="10dp"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart" />
+                <!-- Barangay Spinner -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Registered Barangay"
+                    android:textSize="16sp" />
 
-            <!-- Home Address -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Home Address"
-                android:textSize="16dp" />
+                <Spinner
+                    android:id="@+id/spinnerBarangay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:padding="10dp"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart" />
 
-            <EditText
-                android:id="@+id/editTextAddress"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:hint="Lot, Block, Street, Subdivision"
-                android:background="@drawable/custom_edittext"
-                android:padding="10dp"
-                android:textSize="18dp" />
+                <!-- Home Address -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Home Address"
+                    android:textSize="16sp" />
 
-            <!-- Mobile Number -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Mobile Number"
-                android:textSize="16dp" />
+                <EditText
+                    android:id="@+id/editTextAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:hint="Lot, Block, Street, Subdivision"
+                    android:padding="10dp"
+                    android:textSize="16sp" />
 
-            <EditText
-                android:id="@+id/editTextMobile"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:hint="+63 *** *** ****"
-                android:background="@drawable/custom_edittext"
-                android:padding="10dp"
-                android:textSize="18dp"
-                android:inputType="phone" />
+                <!-- Mobile Number -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Mobile Number"
+                    android:textSize="16sp" />
 
-            <!-- Password -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Password"
-                android:textSize="16dp" />
+                <EditText
+                    android:id="@+id/editTextMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:hint="+63 *** *** ****"
+                    android:inputType="phone"
+                    android:padding="10dp"
+                    android:textSize="16sp" />
 
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:hint="Minimum of 8 characters"
-                android:background="@drawable/custom_edittext"
-                android:padding="10dp"
-                android:inputType="textPassword"
-                android:textSize="18dp" />
+                <!-- Password -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Password"
+                    android:textSize="16sp" />
 
-            <!-- Sign Up Button -->
-            <Button
-                android:id="@+id/SignupButton"
-                android:layout_width="150dp"
-                android:layout_height="81dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:backgroundTint="@color/darkgreen"
-                android:text="Sign up"
-                android:textColor="@android:color/white"
-                android:textSize="25dp"
-                app:cornerRadius="10dp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:hint="Minimum of 8 characters"
+                    android:inputType="textPassword"
+                    android:padding="10dp"
+                    android:textSize="16sp" />
 
-    <!-- Already Have Account Text -->
-    <TextView
-        android:id="@+id/alreadyHaveAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Already have an account?"
-        android:textColor="@android:color/holo_blue_light"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:elevation="21dp"/>
-</LinearLayout>
+                <!-- Sign Up Button -->
+                <Button
+                    android:id="@+id/SignupButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/darkgreen"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="12dp"
+                    android:text="Sign up"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    app:cornerRadius="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Already Have Account Text -->
+        <TextView
+            android:id="@+id/alreadyHaveAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Already have an account?"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:elevation="8dp" />
+    </LinearLayout>
+</ScrollView>

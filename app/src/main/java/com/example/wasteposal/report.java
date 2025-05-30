@@ -2,14 +2,12 @@ package com.example.wasteposal;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,16 +30,16 @@ public class report extends AppCompatActivity {
         setContentView(R.layout.report);
 
         complaintText = findViewById(R.id.complaintText);
-        submitButton = findViewById(R.id.loginButton); // This is your Submit button
+        submitButton = findViewById(R.id.loginButton); // Submit button
 
         // Load user data from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        userId = prefs.getString("userId", "01-0001"); // default fallback
+        userId = prefs.getString("userId", "01-0001");
         city = prefs.getString("city", "Makati");
         barangay = prefs.getString("barangay", "Magallanes");
         address = prefs.getString("address", "No address");
 
-        // Initialize Firebase reference
+        // Firebase reference to complaints under this barangay
         complaintsRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference()
@@ -60,33 +58,34 @@ public class report extends AppCompatActivity {
             return;
         }
 
-        complaintsRef.get().addOnSuccessListener(snapshot -> {
+        // Get current time as timestamp
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date());
+
+        // Count complaints under this user to generate complaintDisplayId
+        complaintsRef.child(userId).get().addOnSuccessListener(snapshot -> {
             long count = snapshot.getChildrenCount() + 1;
             String complaintDisplayId = userId + "-" + count;
-            String complaintId = "complaint" + count;
-
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date());
 
             HashMap<String, Object> complaintData = new HashMap<>();
             complaintData.put("address", address);
-            complaintData.put("complaint_display_ID", complaintDisplayId);
             complaintData.put("complaint_status", "pending");
             complaintData.put("message", message);
-            complaintData.put("response", "No response yet.");
             complaintData.put("timestamp", timestamp);
+            complaintData.put("userId", userId); // Optional: add userId to the data
 
-            complaintsRef.child(complaintId)
+            // Save under /complaints/{userId}/{complaintDisplayId}
+            complaintsRef.child(userId).child(complaintDisplayId)
                     .setValue(complaintData)
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(report.this, "Complaint submitted successfully.", Toast.LENGTH_SHORT).show();
-                        complaintText.setText(""); // Clear input
+                        complaintText.setText("");
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(report.this, "Failed to submit complaint: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
 
         }).addOnFailureListener(e -> {
-            Toast.makeText(report.this, "Failed to read complaints: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(report.this, "Failed to access complaint data: " + e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
 }

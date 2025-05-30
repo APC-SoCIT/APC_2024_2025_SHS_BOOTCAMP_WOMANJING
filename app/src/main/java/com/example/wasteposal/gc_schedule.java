@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 import androidx.core.content.ContextCompat;
+import android.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,32 +26,48 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+//Class
 public class gc_schedule extends AppCompatActivity {
 
     private LinearLayout scheduleContainer;
     private DatabaseReference scheduleRef;
-    private String city = "Makati";
-    private String barangay = "Magallanes";
+    private String city;
+    private String barangay;
 
     private static final String[] DAY_ORDER = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
+    // Shows gc_schedule
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.r_schedule);
 
+        // Get saved city and barangay from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        this.city = prefs.getString("city", null);
+        this.barangay = prefs.getString("barangay", null);
+
+        if (city == null || barangay == null) {
+            Toast.makeText(this, "Missing user location data", Toast.LENGTH_SHORT).show();
+            finish(); // Close screen if data is missing
+            return;
+        }
+
         scheduleContainer = findViewById(R.id.scheduleContainer);
+        //Gets data from database
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app");
         scheduleRef = db.getReference(city).child(barangay).child("Areas");
 
-        Toast.makeText(this, "Loading data...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Loading schedule...", Toast.LENGTH_SHORT).show();
+
         loadScheduleData();
     }
 
+    //Gets data from db, sets up db structure, then calls another method to display
     private void loadScheduleData() {
-        scheduleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        scheduleRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Map<String, List<AreaSchedule>> groupedByDay = new HashMap<>();
@@ -58,7 +76,7 @@ public class gc_schedule extends AppCompatActivity {
                     String areaName = areaSnap.getKey();
 
                     for (DataSnapshot daySnap : areaSnap.getChildren()) {
-                        String rawDay = daySnap.getKey(); // e.g., Mon
+                        String rawDay = daySnap.getKey();
                         String normalizedDay = normalizeDay(rawDay);
                         if (normalizedDay.isEmpty()) continue;
 
@@ -82,6 +100,7 @@ public class gc_schedule extends AppCompatActivity {
         });
     }
 
+    // Converts short strings from db to complete terms
     private String normalizeDay(String day) {
         if (day == null) return "";
         day = day.trim().toLowerCase();
@@ -104,6 +123,7 @@ public class gc_schedule extends AppCompatActivity {
         }
     }
 
+    // Organizes schedule by day, time, and area
     private void displayGroupedSchedule(Map<String, List<AreaSchedule>> groupedData) {
         scheduleContainer.removeAllViews();
 
@@ -128,6 +148,7 @@ public class gc_schedule extends AppCompatActivity {
         }
     }
 
+    // Sorts time for each area
     private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
@@ -142,6 +163,7 @@ public class gc_schedule extends AppCompatActivity {
         });
     }
 
+    // Converts to 12 Hour Format
     private String convertTo12HourFormat(String time24) {
         try {
             SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -153,6 +175,7 @@ public class gc_schedule extends AppCompatActivity {
         }
     }
 
+    // Updates status icon based on text
     private void updateStatusIcon(ImageView iconView, String status) {
         switch (status.toLowerCase()) {
             case "scheduled":
@@ -165,11 +188,12 @@ public class gc_schedule extends AppCompatActivity {
                 iconView.setImageResource(R.drawable.done_icon);
                 break;
             default:
-                iconView.setImageResource(R.drawable.track_icon); // fallback
+                iconView.setImageResource(R.drawable.track_icon);
                 break;
         }
     }
 
+    // Schedule card for collector
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.gc_area_schedule_card, scheduleContainer, false);
@@ -192,41 +216,103 @@ public class gc_schedule extends AppCompatActivity {
         updateButtonAppearance(btnStatusAction, statusValue);
         updateStatusIcon(statusIcon, statusValue);
 
+        // Button press with confirmation
         btnStatusAction.setOnClickListener(v -> {
             String currentStatus = areaSchedule.schedule.status;
             if (currentStatus == null) currentStatus = "scheduled";
 
-            String newStatus;
+            String nextStatus;
             switch (currentStatus) {
                 case "scheduled":
-                    newStatus = "in-progress";
+                    nextStatus = "in-progress";
                     break;
                 case "in-progress":
-                    newStatus = "done";
+                    nextStatus = "done";
                     break;
                 case "done":
                 default:
-                    newStatus = "scheduled";
+                    nextStatus = "scheduled";
                     break;
             }
 
-            // Update Firebase
-            scheduleRef.child(areaSchedule.areaName)
-                    .child(areaSchedule.day)
-                    .child("status")
-                    .setValue(newStatus);
+            // Build confirmation message
+            String message;
+            switch (nextStatus) {
+                case "in-progress":
+                    message = "Mark this area as In-Progress?";
+                    break;
+                case "done":
+                    message = "Mark this area as Done?";
+                    break;
+                case "scheduled":
+                    message = "Reset this area to Scheduled?";
+                    break;
+                default:
+                    message = "Are you sure you want to proceed?";
+            }
 
-            // Update UI and model
-            areaSchedule.schedule.status = newStatus;
-            status.setText(capitalizeStatus(newStatus));
-            updateButtonAppearance(btnStatusAction, newStatus);
-            updateStatusIcon(statusIcon, newStatus);
+            // Show confirmation dialog
+            new AlertDialog.Builder(gc_schedule.this)
+                    .setTitle("Confirm Action")
+                    .setMessage(message)
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        if (nextStatus.equals("in-progress")) {
+                            checkIfAnyInProgress(areaSchedule, () -> {
+                                updateStatusInDatabase(areaSchedule, nextStatus, status, btnStatusAction, statusIcon);
+                            }, () -> {
+                                Toast.makeText(gc_schedule.this, "Only one area can be In-Progress at a time.", Toast.LENGTH_SHORT).show();
+                            });
+                        } else {
+                            updateStatusInDatabase(areaSchedule, nextStatus, status, btnStatusAction, statusIcon);
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
 
         return cardView;
     }
 
+    // No multiple In-Progress
+    private void checkIfAnyInProgress(AreaSchedule current, Runnable onNoneFound, Runnable onFound) {
+        scheduleRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot areaSnap : snapshot.getChildren()) {
+                    String areaName = areaSnap.getKey();
+                    for (DataSnapshot daySnap : areaSnap.getChildren()) {
+                        String status = daySnap.child("status").getValue(String.class);
+                        if ("in-progress".equalsIgnoreCase(status)) {
+                            if (areaName.equals(current.areaName) && daySnap.getKey().equals(current.day)) {
+                                continue;
+                            }
+                            onFound.run();
+                            return;
+                        }
+                    }
+                }
+                onNoneFound.run();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(gc_schedule.this, "Error checking status", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Updates Firebase and UI
+    private void updateStatusInDatabase(AreaSchedule areaSchedule, String newStatus, TextView statusText, Button button, ImageView icon) {
+        scheduleRef.child(areaSchedule.areaName)
+                .child(areaSchedule.day)
+                .child("status")
+                .setValue(newStatus);
+
+        areaSchedule.schedule.status = newStatus;
+        statusText.setText(capitalizeStatus(newStatus));
+        updateButtonAppearance(button, newStatus);
+        updateStatusIcon(icon, newStatus);
+    }
     private String capitalizeStatus(String status) {
         switch (status) {
             case "scheduled": return "Scheduled";
@@ -236,6 +322,7 @@ public class gc_schedule extends AppCompatActivity {
         }
     }
 
+    // Progress Button
     private void updateButtonAppearance(Button button, String status) {
         switch (status) {
             case "scheduled":

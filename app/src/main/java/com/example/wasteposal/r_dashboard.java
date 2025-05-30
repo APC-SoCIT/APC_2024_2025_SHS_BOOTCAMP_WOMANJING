@@ -3,6 +3,7 @@ package com.example.wasteposal;
 import android.content.Intent; // <-- Add this
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout; // <-- Add this
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -51,7 +52,7 @@ public class r_dashboard extends AppCompatActivity {
             });
         }
 
-        // Report
+        // Track
         LinearLayout trackButton = findViewById(R.id.r_track_button);
         if (trackButton != null) {
             trackButton.setOnClickListener(new View.OnClickListener() {
@@ -62,5 +63,12 @@ public class r_dashboard extends AppCompatActivity {
                 }
             });
     }
+
+        FrameLayout inboxButton = findViewById(R.id.r_inbox_button);
+        if (inboxButton != null) {
+            inboxButton.setOnClickListener(v -> {
+                startActivity(new Intent(r_dashboard.this, r_inbox.class));
+            });
+        }
     }
 }

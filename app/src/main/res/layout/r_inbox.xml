@@ -1,0 +1,48 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gc_schedule"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".gc_schedule">
+
+    <!-- Fixed Top Bar -->
+    <ImageView
+        android:id="@+id/topBarSched"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/schedule_topbar"
+        android:elevation="9dp" />
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="23dp"
+        android:layout_marginTop="60dp"
+        android:textColor="@color/white"
+        android:text="INBOX"
+        android:textAlignment="center"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:elevation="10dp" />
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top">
+
+        <LinearLayout
+            android:id="@+id/inboxContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="190dp"
+            android:paddingBottom="16dp"
+            android:paddingHorizontal="16dp"
+            />
+
+    </ScrollView>
+</FrameLayout>
