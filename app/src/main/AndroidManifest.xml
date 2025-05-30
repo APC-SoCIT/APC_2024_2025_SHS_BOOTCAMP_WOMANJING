@@ -4,8 +4,11 @@
     package="com.example.wasteposal">
 
     <!-- Permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -34,8 +37,8 @@
         <activity android:name=".gc_dashboard" android:exported="true" />
         <activity android:name=".r_schedule" android:exported="true" />
         <activity android:name=".gc_schedule" android:exported="true" />
-        <activity android:name=".r_track" android:exported="true"/>
-        <activity android:name=".gc_track" android:exported="true"/>
+        <activity android:name=".r_track" android:exported="true" />
+        <activity android:name=".gc_track" android:exported="true" />
         <activity android:name=".report" android:exported="true" />
         <activity android:name=".r_inbox" android:exported="false" />
         <activity android:name=".login" android:exported="true">
@@ -44,5 +47,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Declare the foreground service here -->
+        <service
+            android:name=".LocationUpdatesService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
     </application>
 </manifest>

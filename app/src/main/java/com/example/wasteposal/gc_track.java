@@ -33,50 +33,41 @@ import java.util.Map;
 public class gc_track extends AppCompatActivity {
 
     public static final int DEFAULT_UPDATE_INTERVAL = 30;
-    public static final int FAST_UPDATE_INTERVAL = 5;
+    public static final int FAST_UPDATE_INTERVAL = 10;
     public static final int PERMISSION_FINE_LOCATION = 99;
 
-    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address, tv_wayPointCounts;
-    Button btn_newWaypoint, btn_showWayPointList, btn_showMap;
-    Switch sw_locationupdates, sw_gps;
+    private TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address, tv_wayPointCounts;
+    private Button btn_newWaypoint, btn_showWayPointList, btn_showMap;
+    private Switch sw_locationupdates, sw_gps;
 
-    boolean updateOn = false;
-    Location currentLocation;
-    List<Location> savedLocations;
+    private boolean updateOn = false;
+    private Location currentLocation;
+    private List<Location> savedLocations;
 
-    LocationRequest locationRequest;
-    LocationCallback locationCallback;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private final String city = "Makati";
+    private final String barangay = "Magallanes";
+    private final String collectorId = "01-0002";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gc_track);
 
-        tv_lat = findViewById(R.id.tv_lat);
-        tv_lon = findViewById(R.id.tv_lon);
-        tv_altitude = findViewById(R.id.tv_altitude);
-        tv_accuracy = findViewById(R.id.tv_accuracy);
-        tv_speed = findViewById(R.id.tv_speed);
-        tv_sensor = findViewById(R.id.tv_sensor);
-        tv_updates = findViewById(R.id.tv_updates);
-        tv_address = findViewById(R.id.tv_address);
-        tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
-
-        sw_gps = findViewById(R.id.sw_gps);
-        sw_locationupdates = findViewById(R.id.sw_locationsupdates);
-
-        btn_newWaypoint = findViewById(R.id.btn_newWaypoint);
-        btn_showWayPointList = findViewById(R.id.btn_showWayPointList);
-        btn_showMap = findViewById(R.id.btn_showMap);
+        initViews();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Setup location request
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(DEFAULT_UPDATE_INTERVAL * 1000);
-        locationRequest.setFastestInterval(FAST_UPDATE_INTERVAL * 1000);
+        locationRequest.setInterval(DEFAULT_UPDATE_INTERVAL * 1000L);
+        locationRequest.setFastestInterval(FAST_UPDATE_INTERVAL * 1000L);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
+        // Define location callback
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -129,42 +120,48 @@ public class gc_track extends AppCompatActivity {
         updateGPS();
     }
 
+    private void initViews() {
+        tv_lat = findViewById(R.id.tv_lat);
+        tv_lon = findViewById(R.id.tv_lon);
+        tv_altitude = findViewById(R.id.tv_altitude);
+        tv_accuracy = findViewById(R.id.tv_accuracy);
+        tv_speed = findViewById(R.id.tv_speed);
+        tv_sensor = findViewById(R.id.tv_sensor);
+        tv_updates = findViewById(R.id.tv_updates);
+        tv_address = findViewById(R.id.tv_address);
+        tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
+
+        sw_gps = findViewById(R.id.sw_gps);
+        sw_locationupdates = findViewById(R.id.sw_locationsupdates);
+
+        btn_newWaypoint = findViewById(R.id.btn_newWaypoint);
+        btn_showWayPointList = findViewById(R.id.btn_showWayPointList);
+        btn_showMap = findViewById(R.id.btn_showMap);
+    }
+
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
             return;
         }
+
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
         tv_updates.setText("Location is being tracked");
         updateOn = true;
     }
 
     private void stopLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        }
-        tv_updates.setText("Location is NOT being tracked");
-        tv_lat.setText("Not tracking location");
-        tv_lon.setText("Not tracking location");
-        tv_speed.setText("Not tracking location");
-        tv_address.setText("Not tracking location");
-        tv_accuracy.setText("Not tracking location");
-        tv_altitude.setText("Not tracking location");
-        tv_sensor.setText("Not tracking location");
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         updateOn = false;
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_FINE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                updateGPS();
-            } else {
-                Toast.makeText(this, "This app requires location permission", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        tv_updates.setText("Location is NOT being tracked");
+        tv_lat.setText("-");
+        tv_lon.setText("-");
+        tv_speed.setText("-");
+        tv_address.setText("-");
+        tv_accuracy.setText("-");
+        tv_altitude.setText("-");
+        tv_sensor.setText("-");
     }
 
     private void updateGPS() {
@@ -236,5 +233,18 @@ public class gc_track extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(gc_track.this, "Failed to upload location", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateGPS();
+            } else {
+                Toast.makeText(this, "Location permission is required", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
