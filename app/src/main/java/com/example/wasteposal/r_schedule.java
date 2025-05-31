@@ -1,18 +1,23 @@
 package com.example.wasteposal;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,26 +27,42 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-// Class fields
+
 public class r_schedule extends AppCompatActivity {
 
     private LinearLayout scheduleContainer;
     private DatabaseReference scheduleRef;
     private String city;
     private String barangay;
+
     private static final String[] DAY_ORDER = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
+
     // Shows r_schedule
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Edge to edge (disable default fitting of system windows)
+        Window window = getWindow();
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+
+        // Make status and nav bars transparent
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+
+        // Optional: Set status/navigation bar icon colors (false = light icons)
+        View decorView = window.getDecorView();
+        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
+        insetsController.setAppearanceLightStatusBars(false);
+        insetsController.setAppearanceLightNavigationBars(false);
+
         setContentView(R.layout.r_schedule);
 
         // Get city and barangay from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String city = prefs.getString("city", null);
-        String barangay = prefs.getString("barangay", null);
+        city = prefs.getString("city", null);
+        barangay = prefs.getString("barangay", null);
 
         if (city == null || barangay == null) {
             Toast.makeText(this, "Missing user location data", Toast.LENGTH_SHORT).show();
@@ -50,34 +71,16 @@ public class r_schedule extends AppCompatActivity {
         }
 
         scheduleContainer = findViewById(R.id.scheduleContainer);
+
         // Gets data from database
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app");
         scheduleRef = db.getReference(city).child(barangay).child("Areas");
-
-        // Keep schedule node in sync even offline
-        scheduleRef.keepSynced(true); // ✅ Keeps data synced locally
-
-        // Monitor connection status (optional)
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean connected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
-                if (connected) {
-                    Toast.makeText(r_schedule.this, "Connected", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(r_schedule.this, "Offline Mode", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
 
         Toast.makeText(this, "Loading schedule...", Toast.LENGTH_SHORT).show();
 
         loadScheduleData();
     }
+
     //Gets data from db, sets up db structure, then calls another method to display
     private void loadScheduleData() {
         scheduleRef.addValueEventListener(new ValueEventListener() {
@@ -109,6 +112,7 @@ public class r_schedule extends AppCompatActivity {
             }
         });
     }
+
     // Converts short strings from db to complete terms
     private String normalizeDay(String day) {
         if (day == null) return "";
@@ -124,6 +128,7 @@ public class r_schedule extends AppCompatActivity {
             default: return "";
         }
     }
+
     // Organizes schedule by day, time, and area
     private void displayGroupedSchedule(Map<String, List<AreaSchedule>> groupedData) {
         scheduleContainer.removeAllViews();
@@ -148,6 +153,7 @@ public class r_schedule extends AppCompatActivity {
             }
         }
     }
+
     //Helper methods
     // Converts to 12 Hour Format
     private String convertTo12HourFormat(String time24) {
@@ -160,6 +166,7 @@ public class r_schedule extends AppCompatActivity {
             return time24;
         }
     }
+
     // Sorts time for each area
     private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -174,19 +181,23 @@ public class r_schedule extends AppCompatActivity {
             }
         });
     }
+
     //Displays the schedule card
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, scheduleContainer, false);
+
         // Links to UI elements
         TextView timeRange = cardView.findViewById(R.id.tvTime);
         TextView areaName = cardView.findViewById(R.id.tvArea);
         TextView status = cardView.findViewById(R.id.tvStatus);
+
         // Time format to be displayed
         String fromTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
         String toTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
         timeRange.setText(fromTimeFormatted + " - " + toTimeFormatted);
         areaName.setText(areaSchedule.areaName);
+
         // Status icon based on status
         String currentStatus = areaSchedule.schedule.status;
         if (currentStatus == null || currentStatus.isEmpty()) {
@@ -212,6 +223,7 @@ public class r_schedule extends AppCompatActivity {
 
         return cardView;
     }
+
     // Convert status data to readable format
     private String capitalizeStatus(String status) {
         if (status == null) return "Pending";
