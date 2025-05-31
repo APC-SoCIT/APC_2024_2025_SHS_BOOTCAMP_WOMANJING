@@ -8,6 +8,19 @@
     android:background="@color/white"
     tools:context=".report">
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/back_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="start|top"
+        android:background="@drawable/back_button_bg"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Back"
+        app:tint="@color/lightgreen"
+        android:elevation="11dp" />
+
     <!-- Main content container -->
     <ScrollView
         android:layout_width="match_parent"
