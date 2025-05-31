@@ -209,7 +209,7 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     private void updateCollectorMarker(LatLng location) {
         if (collectorMarker == null) {
             Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.truck_icon);
-            Bitmap smallIcon = Bitmap.createScaledBitmap(icon, 100, 100, false);
+            Bitmap smallIcon = Bitmap.createScaledBitmap(icon, 150, 150, false);
 
             collectorMarker = mMap.addMarker(new MarkerOptions()
                     .position(location)

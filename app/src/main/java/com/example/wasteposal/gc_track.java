@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -42,7 +43,7 @@ public class gc_track extends AppCompatActivity {
     public static final int PERMISSION_FINE_LOCATION = 99;
 
     private TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address, tv_wayPointCounts;
-    private Button btn_newWaypoint, btn_showWayPointList, btn_showMap;
+
     private Switch sw_locationupdates, sw_gps;
 
     private boolean updateOn = false;
@@ -78,15 +79,17 @@ public class gc_track extends AppCompatActivity {
 
         initViews();
 
+        AppCompatImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> finish());
+
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Setup location request
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(DEFAULT_UPDATE_INTERVAL * 1000L);
         locationRequest.setFastestInterval(FAST_UPDATE_INTERVAL * 1000L);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        // Define location callback
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -96,23 +99,8 @@ public class gc_track extends AppCompatActivity {
                 }
             }
         };
+        
 
-        btn_newWaypoint.setOnClickListener(v -> {
-            MyApplication myApplication = (MyApplication) getApplicationContext();
-            savedLocations = myApplication.getMyLocations();
-            if (savedLocations != null && currentLocation != null) {
-                savedLocations.add(currentLocation);
-                Toast.makeText(gc_track.this, "Waypoint added", Toast.LENGTH_SHORT).show();
-                tv_wayPointCounts.setText(String.valueOf(savedLocations.size()));
-            } else {
-                Toast.makeText(gc_track.this, "Current location not available", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btn_showMap.setOnClickListener(v -> {
-            Intent intent = new Intent(gc_track.this, r_track.class);
-            startActivity(intent);
-        });
 
         sw_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -131,8 +119,10 @@ public class gc_track extends AppCompatActivity {
         sw_locationupdates.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 startLocationUpdates();
+                updateTrackingStatusInFirebase(true); // 🔄 Set tracking to true
             } else {
                 stopLocationUpdates();
+                updateTrackingStatusInFirebase(false); // 🔄 Set tracking to false
             }
         });
 
@@ -152,6 +142,7 @@ public class gc_track extends AppCompatActivity {
 
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationupdates = findViewById(R.id.sw_locationsupdates);
+
     }
 
     private void startLocationUpdates() {
@@ -221,17 +212,13 @@ public class gc_track extends AppCompatActivity {
     }
 
     private void uploadLocationToFirebase(Location location) {
-        String city = "Makati";
-        String barangay = "Magallanes";
-        String collectorId = "01-0002"; // 🔄 Fixed collector ID
-
         DatabaseReference locationRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference()
                 .child(city)
                 .child(barangay)
                 .child("CollectorLocation")
-                .child(collectorId); // 🔄 Overwrites location
+                .child(collectorId);
 
         Map<String, Object> locationData = new HashMap<>();
         locationData.put("latitude", location.getLatitude());
@@ -243,10 +230,29 @@ public class gc_track extends AppCompatActivity {
 
         locationRef.setValue(locationData)
                 .addOnSuccessListener(aVoid -> {
-                    // Optional: success feedback
+                    // Optional success log
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(gc_track.this, "Failed to upload location", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void updateTrackingStatusInFirebase(boolean tracking) {
+        DatabaseReference trackingRef = FirebaseDatabase
+                .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference()
+                .child(city)
+                .child(barangay)
+                .child("CollectorLocation")
+                .child(collectorId)
+                .child("tracking");
+
+        trackingRef.setValue(tracking)
+                .addOnSuccessListener(aVoid -> {
+                    // Optionally notify user
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(gc_track.this, "Failed to update tracking state", Toast.LENGTH_SHORT).show();
                 });
     }
 

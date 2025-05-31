@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.content.SharedPreferences;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
 
@@ -62,6 +63,10 @@ public class gc_schedule extends AppCompatActivity {
         insetsController.setAppearanceLightStatusBars(false);
         insetsController.setAppearanceLightNavigationBars(false);
         setContentView(R.layout.r_schedule);
+
+        AppCompatImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> finish());
+
 
         // Get saved city and barangay from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
