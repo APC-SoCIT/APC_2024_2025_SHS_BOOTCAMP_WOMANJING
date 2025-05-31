@@ -38,9 +38,6 @@ public class r_schedule extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.r_schedule);
 
-        // Enable Firebase local persistence once
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true); // ✅ Enables offline support
-
         // Get city and barangay from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String city = prefs.getString("city", null);

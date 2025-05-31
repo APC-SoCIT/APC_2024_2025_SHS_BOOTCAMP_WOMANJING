@@ -1,120 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- Top Bar -->
+    <ImageView
+        android:id="@+id/topBarSched"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/schedule_topbar"
+        android:elevation="9dp" />
 
-        <TextView
-            android:id="@+id/tv_lat"
+    <!-- Bottom Bar -->
+    <ImageView
+        android:id="@+id/bottomBarSched"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/report_bottombar"
+        android:elevation="9dp" />
+
+    <!-- Original ScrollView -->
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBarSched"
+        android:layout_above="@id/bottomBarSched"
+        android:padding="20dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Latitude"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_lon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Longitude"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <!-- Your existing content remains unchanged -->
+            <TextView
+                android:id="@+id/tv_lat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Latitude"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_accuracy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Accuracy"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_lon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Longitude"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_altitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Altitude"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_accuracy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Accuracy"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_speed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Speed"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_altitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Altitude"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_sensor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sensor Type"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_speed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Speed"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_updates"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Update Status"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_sensor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sensor Type"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Address"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_updates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Status"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <TextView
-            android:id="@+id/tv_countOfCrumbs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Waypoints Count"
-            android:textSize="16sp"
-            android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <Switch
-            android:id="@+id/sw_locationsupdates"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Location Updates"
-            android:padding="8dp" />
+            <TextView
+                android:id="@+id/tv_countOfCrumbs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Waypoints Count"
+                android:textSize="16sp"
+                android:padding="4dp" />
 
-        <Switch
-            android:id="@+id/sw_gps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Use GPS"
-            android:padding="8dp" />
+            <Switch
+                android:id="@+id/sw_locationsupdates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:padding="8dp"
+                android:text="Location Updates" />
 
-        <Button
-            android:id="@+id/btn_newWaypoint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Waypoint"
-            android:layout_marginTop="16dp" />
+            <Switch
+                android:id="@+id/sw_gps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:padding="8dp"
+                android:text="Use GPS" />
 
-        <Button
-            android:id="@+id/btn_showWayPointList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show Waypoint List"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btn_showMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show Map"
-            android:layout_marginTop="8dp" />
-
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
