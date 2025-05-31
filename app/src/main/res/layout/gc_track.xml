@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
+
+    <!-- Fixed Top Bar -->
+    <ImageView
+        android:id="@+id/topBarSched"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/schedule_topbar"
+        android:elevation="9dp" />
+
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="23dp"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/white"
+        android:text="MANAGE\nTRACKER"
+        android:textAlignment="center"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:elevation="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="210dp"
         android:orientation="vertical">
 
         <TextView
@@ -95,26 +118,6 @@
             android:text="Use GPS"
             android:padding="8dp" />
 
-        <Button
-            android:id="@+id/btn_newWaypoint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Waypoint"
-            android:layout_marginTop="16dp" />
-
-        <Button
-            android:id="@+id/btn_showWayPointList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show Waypoint List"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btn_showMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show Map"
-            android:layout_marginTop="8dp" />
 
     </LinearLayout>
-</ScrollView>
+</FrameLayout>

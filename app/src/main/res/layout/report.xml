@@ -21,29 +21,31 @@
             android:orientation="vertical"
             android:paddingBottom="160dp">
 
-            <!-- Top Bar Image -->
-            <ImageView
-                android:id="@+id/topBarSched"
+            <!-- Top Bar with Overlapping Text -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/schedule_topbar"
-                android:elevation="9dp" />
+                android:layout_height="180dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="REPORT"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="50sp"
-                android:textStyle="bold"
-                android:elevation="10dp"/>
+                <ImageView
+                    android:id="@+id/topBarSched"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/schedule_topbar"
+                    android:elevation="9dp" />
 
-            <!-- Spacer -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="REPORT"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="50sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:elevation="10dp" />
+            </FrameLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -54,7 +56,8 @@
                 android:textColor="@color/darkgreen"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:elevation="10dp"/>
+                android:elevation="10dp"
+                android:layout_marginTop="50dp"/>
 
             <Space
                 android:layout_width="match_parent"

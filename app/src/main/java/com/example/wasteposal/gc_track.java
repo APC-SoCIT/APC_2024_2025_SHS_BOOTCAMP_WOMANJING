@@ -152,10 +152,6 @@ public class gc_track extends AppCompatActivity {
 
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationupdates = findViewById(R.id.sw_locationsupdates);
-
-        btn_newWaypoint = findViewById(R.id.btn_newWaypoint);
-        btn_showWayPointList = findViewById(R.id.btn_showWayPointList);
-        btn_showMap = findViewById(R.id.btn_showMap);
     }
 
     private void startLocationUpdates() {
