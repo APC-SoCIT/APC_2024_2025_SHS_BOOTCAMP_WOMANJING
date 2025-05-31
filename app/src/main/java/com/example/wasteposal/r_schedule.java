@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-import androidx.activity.EdgeToEdge;
+import androidx.appcompat.widget.AppCompatImageButton;  // Add this import
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -35,23 +35,20 @@ public class r_schedule extends AppCompatActivity {
     private String city;
     private String barangay;
 
+    private AppCompatImageButton backButton; // Add this
+
     private static final String[] DAY_ORDER = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
-    // Shows r_schedule
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge (disable default fitting of system windows)
+
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
-
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
-
-        // Optional: Set status/navigation bar icon colors (false = light icons)
         View decorView = window.getDecorView();
         WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
         insetsController.setAppearanceLightStatusBars(false);
@@ -59,20 +56,24 @@ public class r_schedule extends AppCompatActivity {
 
         setContentView(R.layout.r_schedule);
 
-        // Get city and barangay from SharedPreferences
+        // Initialize back button and set listener
+        backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            finish(); // just close current activity and go back
+        });
+
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         city = prefs.getString("city", null);
         barangay = prefs.getString("barangay", null);
 
         if (city == null || barangay == null) {
             Toast.makeText(this, "Missing user location data", Toast.LENGTH_SHORT).show();
-            finish(); // Close screen if data is missing
+            finish();
             return;
         }
 
         scheduleContainer = findViewById(R.id.scheduleContainer);
 
-        // Gets data from database
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app");
         scheduleRef = db.getReference(city).child(barangay).child("Areas");
 

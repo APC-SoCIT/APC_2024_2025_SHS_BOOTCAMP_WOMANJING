@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
@@ -51,6 +52,10 @@ public class r_inbox extends AppCompatActivity {
         insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.r_inbox);
+
+        AppCompatImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> finish());
+
 
         inboxContainer = findViewById(R.id.inboxContainer);
 

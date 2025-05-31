@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -77,6 +78,10 @@ public class gc_track extends AppCompatActivity {
         setContentView(R.layout.gc_track);
 
         initViews();
+
+        AppCompatImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> finish());
+
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 

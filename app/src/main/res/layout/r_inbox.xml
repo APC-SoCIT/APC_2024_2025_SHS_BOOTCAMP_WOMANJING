@@ -16,7 +16,6 @@
         android:src="@drawable/schedule_topbar"
         android:elevation="9dp" />
 
-    <!-- Back Button -->
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/back_button"
         android:layout_width="48dp"
@@ -29,6 +28,7 @@
         android:contentDescription="Back"
         app:tint="@color/lightgreen"
         android:elevation="11dp" />
+
 
     <!-- Title -->
     <TextView
