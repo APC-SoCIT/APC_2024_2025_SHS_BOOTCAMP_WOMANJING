@@ -30,7 +30,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/custom_edittext"
             app:cardCornerRadius="15dp"
             app:cardElevation="10dp">
@@ -155,7 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="15dp"
             android:clickable="true"
             android:focusable="true"
             android:text="Already have an account?"

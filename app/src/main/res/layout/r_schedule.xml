@@ -1,6 +1,5 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/gc_schedule"
     android:layout_width="match_parent"
@@ -15,19 +14,6 @@
         android:scaleType="centerCrop"
         android:src="@drawable/schedule_topbar"
         android:elevation="9dp" />
-
-    <!-- Barangay Name -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="23dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:text="Brgy. Magallanes"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:elevation="10dp" />
 
     <!-- Title -->
     <TextView
