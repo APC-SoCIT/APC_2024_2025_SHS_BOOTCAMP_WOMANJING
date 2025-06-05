@@ -37,10 +37,6 @@
         android:clipToPadding="false"
         android:layout_alignParentBottom="true">
 
-        <!-- Green Section -->
-
-        <!-- White Section -->
-
         <LinearLayout
             android:id="@+id/green_section"
             android:layout_width="match_parent"

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,15 +26,8 @@ public class gc_dashboard extends AppCompatActivity {
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
-
-        // Optional: Set status/navigation bar icon colors (false = light icons)
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.gc_dashboard);
 
@@ -41,7 +35,6 @@ public class gc_dashboard extends AppCompatActivity {
         if (root != null) {
             ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                // Add padding to avoid content under status/navigation bars
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
@@ -63,6 +56,15 @@ public class gc_dashboard extends AppCompatActivity {
         if (trackBtn != null) {
             trackBtn.setOnClickListener(v -> {
                 Intent intent = new Intent(gc_dashboard.this, gc_track.class);
+                startActivity(intent);
+            });
+        }
+
+        // Inbox button
+        FrameLayout InboxBtn = findViewById(R.id.gc_inbox_button);
+        if (InboxBtn != null) {
+            InboxBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(gc_dashboard.this, gc_inbox.class);
                 startActivity(intent);
             });
         }

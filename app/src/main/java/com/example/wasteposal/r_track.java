@@ -43,7 +43,7 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     // Firebase reference
     private final String city = "Makati";
     private final String barangay = "Magallanes";
-    private final String collectorId = "01-0002";
+    private final String collectorId = "02-0001";
 
     // Views for bottom panel
     private TextView statusMessage, currentTime, timeRange, locationLabel, currentArea;
@@ -55,15 +55,7 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
-        window.setNavigationBarColor(Color.TRANSPARENT);
-
-        // Optional: Set status/navigation bar icon colors (false = light icons)
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.r_track);
 
@@ -74,7 +66,6 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
         locationLabel = findViewById(R.id.location_label);
         currentArea = findViewById(R.id.current_area);
 
-        // Load schedule status from Firebase
         fetchInProgressSchedule();
 
         // Set up map

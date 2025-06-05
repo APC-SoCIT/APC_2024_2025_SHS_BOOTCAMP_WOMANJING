@@ -5,20 +5,17 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.*;
 
@@ -32,19 +29,12 @@ public class login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
-        // Optional: Set status/navigation bar icon colors (false = light icons)
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
         setContentView(R.layout.login);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -53,13 +43,13 @@ public class login extends AppCompatActivity {
             return insets;
         });
 
-        // ✅ Auto-login if already logged in
+        // Auto log-in
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
 
         if (isLoggedIn) {
             String userId = prefs.getString("userId", null);
-            if (userId != null && userId.startsWith("GC")) {
+            if (userId != null && userId.startsWith("02")) {
                 startActivity(new Intent(this, gc_dashboard.class));
             } else {
                 startActivity(new Intent(this, r_dashboard.class));
@@ -68,7 +58,6 @@ public class login extends AppCompatActivity {
             return;
         }
 
-        // ✅ Setup login form
         rootRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference();

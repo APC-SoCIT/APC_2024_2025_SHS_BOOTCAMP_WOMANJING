@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
@@ -22,7 +21,6 @@ import android.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-//Class
 public class gc_schedule extends AppCompatActivity {
 
     private LinearLayout scheduleContainer;
@@ -45,30 +42,21 @@ public class gc_schedule extends AppCompatActivity {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
-    // Shows gc_schedule
+    // Shows gc_schedule.xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge (disable default fitting of system windows)
+        // Edge to edge UI
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
-        window.setNavigationBarColor(Color.TRANSPARENT);
-
-        // Optional: Set status/navigation bar icon colors (false = light icons)
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
-        setContentView(R.layout.r_schedule);
+        setContentView(R.layout.gc_schedule);
 
         AppCompatImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
 
-
-        // Get saved city and barangay from SharedPreferences
+        // Get saved city and barangay from Login Data
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         this.city = prefs.getString("city", null);
         this.barangay = prefs.getString("barangay", null);
@@ -187,7 +175,6 @@ public class gc_schedule extends AppCompatActivity {
         });
     }
 
-    // Converts to 12 Hour Format
     private String convertTo12HourFormat(String time24) {
         try {
             SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -297,7 +284,6 @@ public class gc_schedule extends AppCompatActivity {
         return cardView;
     }
 
-    // No multiple In-Progress
     private void checkIfAnyInProgress(AreaSchedule current, Runnable onNoneFound, Runnable onFound) {
         scheduleRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

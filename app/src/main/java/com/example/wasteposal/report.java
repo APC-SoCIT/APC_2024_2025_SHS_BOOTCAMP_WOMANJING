@@ -1,10 +1,8 @@
 package com.example.wasteposal;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +11,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -40,22 +37,15 @@ public class report extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.report);
 
         complaintText = findViewById(R.id.complaintText);
         submitButton = findViewById(R.id.submitButton);
 
-        // Initialize back button and set click listener
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
-            // Go back to previous screen or dashboard
-            finish();  // or use Intent to open a specific activity if needed
-            // Example: startActivity(new Intent(report.this, r_dashboard.class));
+            finish();
         });
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);

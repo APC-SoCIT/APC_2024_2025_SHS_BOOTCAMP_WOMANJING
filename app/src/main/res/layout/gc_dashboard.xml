@@ -41,7 +41,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You are logged in \nas a RESIDENT"
+                    android:text="You are logged in \nas a COLLECTOR"
                     android:textColor="@android:color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -152,6 +152,7 @@
 
             <!-- Inbox Button -->
             <FrameLayout
+                android:id="@+id/gc_inbox_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class r_inbox extends AppCompatActivity {
+public class gc_inbox extends AppCompatActivity {
 
     private LinearLayout inboxContainer;
     private DatabaseReference dbRef;
@@ -42,8 +42,6 @@ public class r_inbox extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
-
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
@@ -67,7 +65,6 @@ public class r_inbox extends AppCompatActivity {
 
         dbRef = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
 
-        // Load the user address first
         dbRef.child(city).child(barangay).child("User").child(userId).child("address")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -81,7 +78,6 @@ public class r_inbox extends AppCompatActivity {
                             }
                             userAddress = addressBuilder.toString().replaceAll(", $", "");
                         } else if (addressObj instanceof String) {
-                            // It's a simple string address
                             userAddress = (String) addressObj;
                         } else {
                             userAddress = "No address found";
@@ -92,7 +88,7 @@ public class r_inbox extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(r_inbox.this, "Failed to get user address", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(gc_inbox.this, "Failed to get user address", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -100,46 +96,42 @@ public class r_inbox extends AppCompatActivity {
     private void loadInbox(String userId, String city, String barangay) {
         inboxContainer.removeAllViews();
 
-        // Load complaints
-        dbRef.child(city).child(barangay).child("complaints").child(userId)
+        dbRef.child(city).child(barangay).child("complaints")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snap : snapshot.getChildren()) {
-                            Complaint complaint = snap.getValue(Complaint.class);
-                            if (complaint != null) {
-                                View card = createInboxCard(complaint);
-                                inboxContainer.addView(card);
-                            }
-                        }
-                    }
+                        for (DataSnapshot userSnap : snapshot.getChildren()) {
+                            String residentId = userSnap.getKey();
+                            if (residentId == null || residentId.equals(userId)) continue;
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(r_inbox.this, "Failed to load complaints", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            for (DataSnapshot complaintSnap : userSnap.getChildren()) {
+                                Complaint complaint = complaintSnap.getValue(Complaint.class);
+                                if (complaint != null && "accepted".equalsIgnoreCase(complaint.complaint_status)) {
+                                    dbRef.child(city).child(barangay).child("User").child(residentId).child("address")
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    String address = "Unknown address";
+                                                    Object addressObj = snapshot.getValue();
+                                                    if (addressObj instanceof Map) {
+                                                        StringBuilder sb = new StringBuilder();
+                                                        for (Object value : ((Map) addressObj).values()) {
+                                                            sb.append(value).append(", ");
+                                                        }
+                                                        address = sb.toString().replaceAll(", $", "");
+                                                    } else if (addressObj instanceof String) {
+                                                        address = (String) addressObj;
+                                                    }
+                                                    View card = createInboxCard(complaint, address);
+                                                    inboxContainer.addView(card);
+                                                }
 
-        // Load announcements based on address match
-        dbRef.child(city).child(barangay).child("announcements")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (userAddress == null) return; // safety null check
-                        String lowerUserAddress = userAddress.toLowerCase();
-
-                        for (DataSnapshot areaSnap : snapshot.getChildren()) {
-                            String areaKey = areaSnap.getKey();
-                            if (areaKey == null) continue;
-                            areaKey = areaKey.toLowerCase();
-
-                            if (lowerUserAddress.contains(areaKey)) {
-                                for (DataSnapshot annSnap : areaSnap.getChildren()) {
-                                    Announcement ann = annSnap.getValue(Announcement.class);
-                                    if (ann != null) {
-                                        View card = createAnnouncementCard(ann);
-                                        inboxContainer.addView(card);
-                                    }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    View card = createInboxCard(complaint, "Unknown address");
+                                                    inboxContainer.addView(card);
+                                                }
+                                            });
                                 }
                             }
                         }
@@ -147,12 +139,12 @@ public class r_inbox extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(r_inbox.this, "Failed to load announcements", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(gc_inbox.this, "Failed to load complaints", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private View createInboxCard(Complaint complaint) {
+    private View createInboxCard(Complaint complaint, String residentAddress) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, inboxContainer, false);
 
@@ -162,113 +154,40 @@ public class r_inbox extends AppCompatActivity {
         ImageView icon = cardView.findViewById(R.id.StatusIcon);
 
         String status = complaint.complaint_status != null ? complaint.complaint_status.toLowerCase() : "pending";
-        String previewText;
-        if (complaint.response != null && !complaint.response.isEmpty()) {
-            Map<String, Object> res = complaint.response;
-            if (res.containsKey("acceptedmessage_response")) {
-                Map<String, Object> accepted = (Map<String, Object>) res.get("acceptedmessage_response");
-                previewText = accepted.get("message").toString();
-            } else if (res.containsKey("rejectedmessage_response")) {
-                Map<String, Object> rejected = (Map<String, Object>) res.get("rejectedmessage_response");
-                previewText = rejected.get("message").toString();
-            } else {
-                previewText = "No response message";
-            }
-        } else {
-            previewText = (complaint.message != null) ? complaint.message : "No message";
-        }
+        String previewText = (complaint.message != null) ? complaint.message : "No message";
 
         previewText = previewText.replace("\n", " ").trim();
         String displayTime = (complaint.timestamp != null && !complaint.timestamp.isEmpty())
                 ? formatTimestamp(complaint.timestamp) : "Pending";
 
         tvTime.setText(displayTime);
-        tvArea.setText(previewText);
+        tvArea.setText(previewText + "\n(" + residentAddress + ")");
         tvStatus.setText(capitalizeStatus(status));
 
-        // Color code based on status
         switch (status) {
             case "accepted":
-                tvStatus.setTextColor(Color.parseColor("#388E3C")); // dark green
-                icon.setImageResource(R.drawable.track_icon); // replace with your green check icon
+                tvStatus.setTextColor(Color.parseColor("#388E3C"));
+                icon.setImageResource(R.drawable.track_icon);
                 break;
             case "rejected":
-                tvStatus.setTextColor(Color.parseColor("#D32F2F")); // red
-                icon.setImageResource(R.drawable.track_icon); // replace with your red cross icon
+                tvStatus.setTextColor(Color.parseColor("#D32F2F"));
+                icon.setImageResource(R.drawable.track_icon);
                 break;
             case "pending":
             default:
-                tvStatus.setTextColor(Color.parseColor("#F9A825")); // amber
-                icon.setImageResource(R.drawable.track_icon); // replace with your default icon
+                tvStatus.setTextColor(Color.parseColor("#F9A825"));
+                icon.setImageResource(R.drawable.track_icon);
                 break;
         }
 
-        cardView.setOnClickListener(v -> showComplaintDialog(complaint));
+        cardView.setOnClickListener(v -> showComplaintDialog(complaint, residentAddress));
         return cardView;
     }
 
-
-    private View createAnnouncementCard(Announcement ann) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View cardView = inflater.inflate(R.layout.r_area_schedule_card, inboxContainer, false);
-
-        TextView tvTime = cardView.findViewById(R.id.tvTime);
-        TextView tvArea = cardView.findViewById(R.id.tvArea);
-        TextView tvStatus = cardView.findViewById(R.id.tvStatus);
-        ImageView icon = cardView.findViewById(R.id.StatusIcon);
-
-        tvTime.setText(formatTimestamp(ann.timestamp));
-        tvArea.setText(ann.message);
-        tvStatus.setText("Announcement");
-        icon.setImageResource(R.drawable.track_icon); // replace with a megaphone icon if available
-
-        cardView.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Announcement")
-                    .setMessage(ann.message)
-                    .setPositiveButton("Close", null)
-                    .show();
-        });
-
-        return cardView;
-    }
-
-    private String formatTimestamp(String isoDate) {
-        if (isoDate == null || isoDate.isEmpty()) return "Unknown time";
-        String normalized = isoDate;
-        if (isoDate.endsWith("Z")) {
-            normalized = isoDate.substring(0, isoDate.length() - 1);
-        }
-
-        // Try multiple date formats for robustness
-        String[] possibleFormats = new String[] {
-                "yyyy-MM-dd'T'HH:mm:ss.SSS",
-        };
-
-        Date date = null;
-        for (String format : possibleFormats) {
-            try {
-                SimpleDateFormat isoFormat = new SimpleDateFormat(format, Locale.getDefault());
-                isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                date = isoFormat.parse(normalized);
-                if (date != null) break;
-            } catch (ParseException ignored) {
-            }
-        }
-
-        if (date == null) return "Unknown time";
-
-        SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
-        return displayFormat.format(date);
-    }
-
-    private String capitalizeStatus(String status) {
-        if (status == null || status.isEmpty()) return "Pending";
-        return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
-    }
-
-    private void showComplaintDialog(Complaint complaint) {
+    private void showComplaintDialog(Complaint complaint, String residentAddress) {
         StringBuilder message = new StringBuilder();
+
+        message.append("From: ").append(residentAddress).append("\n\n");
 
         if (complaint.message != null && !complaint.message.isEmpty()) {
             message.append("Complaint:\n").append(complaint.message).append("\n\n");
@@ -291,14 +210,35 @@ public class r_inbox extends AppCompatActivity {
             }
         }
 
-        new AlertDialog.Builder(r_inbox.this)
+        new AlertDialog.Builder(gc_inbox.this)
                 .setTitle("Complaint Details")
                 .setMessage(message.toString())
                 .setPositiveButton("OK", null)
                 .show();
     }
 
-    // Firebase model classes
+    private String formatTimestamp(String isoDate) {
+        if (isoDate == null || isoDate.isEmpty()) return "Unknown time";
+        String normalized = isoDate.endsWith("Z") ? isoDate.substring(0, isoDate.length() - 1) : isoDate;
+
+        try {
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = isoFormat.parse(normalized);
+            if (date != null) {
+                SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+                return displayFormat.format(date);
+            }
+        } catch (ParseException ignored) {
+        }
+        return "Unknown time";
+    }
+
+    private String capitalizeStatus(String status) {
+        if (status == null || status.isEmpty()) return "Pending";
+        return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+    }
+
     public static class Complaint {
         public String address;
         public String complaint_status;
@@ -307,15 +247,6 @@ public class r_inbox extends AppCompatActivity {
         public String timestamp;
 
         public Complaint() {
-        }
-    }
-
-
-    public static class Announcement {
-        public String from;
-        public String message;
-        public String timestamp;
-        public Announcement() {
         }
     }
 }
