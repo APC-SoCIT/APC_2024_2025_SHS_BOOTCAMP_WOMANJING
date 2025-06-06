@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,16 +22,12 @@ public class gc_dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
-
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.gc_dashboard);
 
@@ -45,6 +42,7 @@ public class gc_dashboard extends AppCompatActivity {
             System.err.println("ERROR: rootLayout not found in dashboard layout!");
         }
 
+        // Schedule button
         LinearLayout scheduleButton = findViewById(R.id.gc_sched_button);
         if (scheduleButton != null) {
             scheduleButton.setOnClickListener(v -> {
@@ -53,6 +51,7 @@ public class gc_dashboard extends AppCompatActivity {
             });
         }
 
+        // Track button
         LinearLayout trackBtn = findViewById(R.id.gc_track_btn);
         if (trackBtn != null) {
             trackBtn.setOnClickListener(v -> {
@@ -61,6 +60,16 @@ public class gc_dashboard extends AppCompatActivity {
             });
         }
 
+        // Inbox button
+        FrameLayout InboxBtn = findViewById(R.id.gc_inbox_button);
+        if (InboxBtn != null) {
+            InboxBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(gc_dashboard.this, gc_inbox.class);
+                startActivity(intent);
+            });
+        }
+
+        // Logout button
         Button logoutButton = findViewById(R.id.logoutButton);
         if (logoutButton != null) {
             logoutButton.setOnClickListener(v -> {

@@ -4,7 +4,6 @@ public class LocationModel {
     private double latitude;
     private double longitude;
 
-    // Default constructor required for calls to DataSnapshot.getValue(LocationModel.class)
     public LocationModel() {
     }
 
@@ -12,8 +11,6 @@ public class LocationModel {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
-    // Getters and setters for Firebase to read/write values
 
     public double getLatitude() {
         return latitude;

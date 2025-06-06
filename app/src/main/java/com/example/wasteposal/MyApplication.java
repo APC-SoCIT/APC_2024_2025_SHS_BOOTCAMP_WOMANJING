@@ -15,7 +15,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // ✅ Safe place to enable Firebase persistence
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 

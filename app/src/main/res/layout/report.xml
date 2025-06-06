@@ -8,6 +8,7 @@
     android:background="@color/white"
     tools:context=".report">
 
+    <!-- Back Button -->
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/back_button"
         android:layout_width="48dp"
@@ -20,8 +21,6 @@
         android:contentDescription="Back"
         app:tint="@color/lightgreen"
         android:elevation="11dp" />
-
-
 
     <!-- Main content container -->
     <ScrollView
@@ -61,17 +60,12 @@
                     android:elevation="10dp" />
             </FrameLayout>
 
-
-            <!-- Spacer -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="100dp"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Inform us about \nyour complaint"
                 android:textAlignment="textStart"
+                android:layout_marginTop="40dp"
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/darkgreen"
                 android:textSize="30sp"

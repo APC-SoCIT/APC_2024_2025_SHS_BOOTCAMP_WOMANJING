@@ -97,7 +97,7 @@ public class gc_track extends AppCompatActivity {
                 }
             }
         };
-        
+
 
 
         sw_gps.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -246,7 +246,6 @@ public class gc_track extends AppCompatActivity {
 
         trackingRef.setValue(tracking)
                 .addOnSuccessListener(aVoid -> {
-                    // Optionally notify user
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(gc_track.this, "Failed to update tracking state", Toast.LENGTH_SHORT).show();

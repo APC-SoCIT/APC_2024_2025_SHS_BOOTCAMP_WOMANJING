@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-import androidx.appcompat.widget.AppCompatImageButton;  // Add this import
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -32,10 +32,8 @@ public class r_schedule extends AppCompatActivity {
 
     private LinearLayout scheduleContainer;
     private DatabaseReference scheduleRef;
-    private String city;
-    private String barangay;
-
-    private AppCompatImageButton backButton; // Add this
+    private String city, barangay;
+    private AppCompatImageButton backButton;
 
     private static final String[] DAY_ORDER = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -44,22 +42,16 @@ public class r_schedule extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
+
         window.setStatusBarColor(Color.TRANSPARENT);
-        window.setNavigationBarColor(Color.TRANSPARENT);
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.r_schedule);
 
         backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
+        backButton.setOnClickListener(v -> finish());
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         city = prefs.getString("city", null);
@@ -95,7 +87,7 @@ public class r_schedule extends AppCompatActivity {
                         if (dayKey.isEmpty()) continue;
 
                         Schedule schedule = daySnap.getValue(Schedule.class);
-                        if (schedule == null) continue;
+                        if (schedule == null || schedule.from == null || schedule.to == null) continue;
 
                         groupedByDay.putIfAbsent(dayKey, new ArrayList<>());
                         groupedByDay.get(dayKey).add(new AreaSchedule(areaName, schedule));
@@ -107,15 +99,14 @@ public class r_schedule extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(r_schedule.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(r_schedule.this, "Failed to load data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private String normalizeDay(String day) {
         if (day == null) return "";
-        day = day.trim().toLowerCase();
-        switch (day) {
+        switch (day.trim().toLowerCase()) {
             case "sun": return "Sunday";
             case "mon": return "Monday";
             case "tue": return "Tuesday";
@@ -136,6 +127,7 @@ public class r_schedule extends AppCompatActivity {
 
             sortSchedulesByFromTime(schedules);
 
+            // Day header
             TextView dayHeader = new TextView(this);
             dayHeader.setText(day);
             dayHeader.setTextSize(35f);
@@ -144,21 +136,11 @@ public class r_schedule extends AppCompatActivity {
             dayHeader.setPadding(0, 20, 0, 20);
             scheduleContainer.addView(dayHeader);
 
+            // Cards
             for (AreaSchedule areaSchedule : schedules) {
                 View card = createScheduleCard(areaSchedule);
                 scheduleContainer.addView(card);
             }
-        }
-    }
-
-    private String convertTo12HourFormat(String time24) {
-        try {
-            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-            Date date = sdf24.parse(time24);
-            return sdf12.format(date);
-        } catch (Exception e) {
-            return time24;
         }
     }
 
@@ -176,6 +158,17 @@ public class r_schedule extends AppCompatActivity {
         });
     }
 
+    private String convertTo12HourFormat(String time24) {
+        try {
+            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf12 = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf24.parse(time24);
+            return sdf12.format(date);
+        } catch (Exception e) {
+            return time24;
+        }
+    }
+
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, scheduleContainer, false);
@@ -183,20 +176,19 @@ public class r_schedule extends AppCompatActivity {
         TextView timeRange = cardView.findViewById(R.id.tvTime);
         TextView areaName = cardView.findViewById(R.id.tvArea);
         TextView status = cardView.findViewById(R.id.tvStatus);
-
-        String fromTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
-        String toTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
-        timeRange.setText(fromTimeFormatted + " - " + toTimeFormatted);
-        areaName.setText(areaSchedule.areaName);
-
-        String currentStatus = areaSchedule.schedule.status;
-        if (currentStatus == null || currentStatus.isEmpty()) {
-            currentStatus = "Pending";
-        }
-        status.setText(capitalizeStatus(currentStatus));
         ImageView statusIcon = cardView.findViewById(R.id.StatusIcon);
 
-        switch (currentStatus.toLowerCase()) {
+        String fromFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
+        String toFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
+        timeRange.setText(fromFormatted + " - " + toFormatted);
+        areaName.setText(areaSchedule.areaName);
+
+        String currentStatus = (areaSchedule.schedule.status == null || areaSchedule.schedule.status.isEmpty())
+                ? "Pending" : areaSchedule.schedule.status.toLowerCase();
+
+        status.setText(capitalizeStatus(currentStatus));
+
+        switch (currentStatus) {
             case "scheduled":
                 statusIcon.setImageResource(R.drawable.scheduled_icon);
                 break;
@@ -207,7 +199,7 @@ public class r_schedule extends AppCompatActivity {
                 statusIcon.setImageResource(R.drawable.done_icon);
                 break;
             default:
-                statusIcon.setImageResource(R.drawable.track_icon); // fallback icon
+                statusIcon.setImageResource(R.drawable.track_icon);
                 break;
         }
 
@@ -215,16 +207,17 @@ public class r_schedule extends AppCompatActivity {
     }
 
     private String capitalizeStatus(String status) {
-        if (status == null) return "Pending";
         switch (status.toLowerCase()) {
             case "scheduled": return "Scheduled";
             case "in-progress": return "In-Progress";
             case "done": return "Done";
             case "pending": return "Pending";
-            default: return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
+            default:
+                return status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
         }
     }
 
+    // Firebase model classes
     public static class Schedule {
         public String from;
         public String to;

@@ -43,7 +43,7 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     // Firebase reference
     private final String city = "Makati";
     private final String barangay = "Magallanes";
-    private final String collectorId = "01-0002";
+    private final String collectorId = "02-0001";
 
     // Views for bottom panel
     private TextView statusMessage, currentTime, timeRange, locationLabel, currentArea;
@@ -51,19 +51,15 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         window.setStatusBarColor(Color.TRANSPARENT);
-        window.setNavigationBarColor(Color.TRANSPARENT);
-
-        View decorView = window.getDecorView();
-        WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
-        insetsController.setAppearanceLightStatusBars(false);
-        insetsController.setAppearanceLightNavigationBars(false);
 
         setContentView(R.layout.r_track);
 
+        // Get references to bottom layout elements
         statusMessage = findViewById(R.id.status_message);
         currentTime = findViewById(R.id.current_time);
         timeRange = findViewById(R.id.time_range);
@@ -72,6 +68,7 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
 
         fetchInProgressSchedule();
 
+        // Set up map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {

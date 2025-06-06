@@ -40,7 +40,8 @@
         <activity android:name=".r_track" android:exported="true" />
         <activity android:name=".gc_track" android:exported="true" />
         <activity android:name=".report" android:exported="true" />
-        <activity android:name=".r_inbox" android:exported="false" />
+        <activity android:name=".r_inbox" android:exported="true" />
+        <activity android:name=".gc_inbox" android:exported="true" />
         <activity android:name=".login" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
