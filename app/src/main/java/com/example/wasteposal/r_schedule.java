@@ -56,10 +56,9 @@ public class r_schedule extends AppCompatActivity {
 
         setContentView(R.layout.r_schedule);
 
-        // Initialize back button and set listener
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
-            finish(); // just close current activity and go back
+            finish();
         });
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -82,7 +81,6 @@ public class r_schedule extends AppCompatActivity {
         loadScheduleData();
     }
 
-    //Gets data from db, sets up db structure, then calls another method to display
     private void loadScheduleData() {
         scheduleRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,7 +112,6 @@ public class r_schedule extends AppCompatActivity {
         });
     }
 
-    // Converts short strings from db to complete terms
     private String normalizeDay(String day) {
         if (day == null) return "";
         day = day.trim().toLowerCase();
@@ -130,7 +127,6 @@ public class r_schedule extends AppCompatActivity {
         }
     }
 
-    // Organizes schedule by day, time, and area
     private void displayGroupedSchedule(Map<String, List<AreaSchedule>> groupedData) {
         scheduleContainer.removeAllViews();
 
@@ -155,8 +151,6 @@ public class r_schedule extends AppCompatActivity {
         }
     }
 
-    //Helper methods
-    // Converts to 12 Hour Format
     private String convertTo12HourFormat(String time24) {
         try {
             SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -168,7 +162,6 @@ public class r_schedule extends AppCompatActivity {
         }
     }
 
-    // Sorts time for each area
     private void sortSchedulesByFromTime(List<AreaSchedule> schedules) {
         SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
@@ -183,23 +176,19 @@ public class r_schedule extends AppCompatActivity {
         });
     }
 
-    //Displays the schedule card
     private View createScheduleCard(AreaSchedule areaSchedule) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardView = inflater.inflate(R.layout.r_area_schedule_card, scheduleContainer, false);
 
-        // Links to UI elements
         TextView timeRange = cardView.findViewById(R.id.tvTime);
         TextView areaName = cardView.findViewById(R.id.tvArea);
         TextView status = cardView.findViewById(R.id.tvStatus);
 
-        // Time format to be displayed
         String fromTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.from);
         String toTimeFormatted = convertTo12HourFormat(areaSchedule.schedule.to);
         timeRange.setText(fromTimeFormatted + " - " + toTimeFormatted);
         areaName.setText(areaSchedule.areaName);
 
-        // Status icon based on status
         String currentStatus = areaSchedule.schedule.status;
         if (currentStatus == null || currentStatus.isEmpty()) {
             currentStatus = "Pending";
@@ -225,7 +214,6 @@ public class r_schedule extends AppCompatActivity {
         return cardView;
     }
 
-    // Convert status data to readable format
     private String capitalizeStatus(String status) {
         if (status == null) return "Pending";
         switch (status.toLowerCase()) {
@@ -237,7 +225,6 @@ public class r_schedule extends AppCompatActivity {
         }
     }
 
-    // Model Classes
     public static class Schedule {
         public String from;
         public String to;

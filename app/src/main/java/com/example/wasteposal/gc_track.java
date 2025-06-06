@@ -42,7 +42,7 @@ public class gc_track extends AppCompatActivity {
     public static final int FAST_UPDATE_INTERVAL = 10;
     public static final int PERMISSION_FINE_LOCATION = 99;
 
-    private TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address, tv_wayPointCounts;
+    private TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address;
 
     private Switch sw_locationupdates, sw_gps;
 
@@ -61,15 +61,13 @@ public class gc_track extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge (disable default fitting of system windows)
+
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
-        // Optional: Set status/navigation bar icon colors (false = light icons)
         View decorView = window.getDecorView();
         WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
         insetsController.setAppearanceLightStatusBars(false);
@@ -138,7 +136,7 @@ public class gc_track extends AppCompatActivity {
         tv_sensor = findViewById(R.id.tv_sensor);
         tv_updates = findViewById(R.id.tv_updates);
         tv_address = findViewById(R.id.tv_address);
-        tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
+
 
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationupdates = findViewById(R.id.sw_locationsupdates);
@@ -206,7 +204,6 @@ public class gc_track extends AppCompatActivity {
 
         MyApplication myApplication = (MyApplication) getApplicationContext();
         savedLocations = myApplication.getMyLocations();
-        tv_wayPointCounts.setText(String.valueOf(savedLocations.size()));
 
         uploadLocationToFirebase(location);
     }

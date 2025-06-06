@@ -21,15 +21,12 @@ public class gc_dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
-        // Optional: Set status/navigation bar icon colors (false = light icons)
         View decorView = window.getDecorView();
         WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
         insetsController.setAppearanceLightStatusBars(false);
@@ -41,7 +38,6 @@ public class gc_dashboard extends AppCompatActivity {
         if (root != null) {
             ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                // Add padding to avoid content under status/navigation bars
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
@@ -49,7 +45,6 @@ public class gc_dashboard extends AppCompatActivity {
             System.err.println("ERROR: rootLayout not found in dashboard layout!");
         }
 
-        // Schedule button
         LinearLayout scheduleButton = findViewById(R.id.gc_sched_button);
         if (scheduleButton != null) {
             scheduleButton.setOnClickListener(v -> {
@@ -58,7 +53,6 @@ public class gc_dashboard extends AppCompatActivity {
             });
         }
 
-        // Track button
         LinearLayout trackBtn = findViewById(R.id.gc_track_btn);
         if (trackBtn != null) {
             trackBtn.setOnClickListener(v -> {
@@ -67,7 +61,6 @@ public class gc_dashboard extends AppCompatActivity {
             });
         }
 
-        // Logout button
         Button logoutButton = findViewById(R.id.logoutButton);
         if (logoutButton != null) {
             logoutButton.setOnClickListener(v -> {

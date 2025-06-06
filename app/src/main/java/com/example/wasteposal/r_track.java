@@ -51,15 +51,12 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge (disable default fitting of system windows)
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
-        // Make status and nav bars transparent
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
-        // Optional: Set status/navigation bar icon colors (false = light icons)
         View decorView = window.getDecorView();
         WindowInsetsControllerCompat insetsController = new WindowInsetsControllerCompat(window, decorView);
         insetsController.setAppearanceLightStatusBars(false);
@@ -67,17 +64,14 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
 
         setContentView(R.layout.r_track);
 
-        // Get references to bottom layout elements
         statusMessage = findViewById(R.id.status_message);
         currentTime = findViewById(R.id.current_time);
         timeRange = findViewById(R.id.time_range);
         locationLabel = findViewById(R.id.location_label);
         currentArea = findViewById(R.id.current_area);
 
-        // Load schedule status from Firebase
         fetchInProgressSchedule();
 
-        // Set up map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
