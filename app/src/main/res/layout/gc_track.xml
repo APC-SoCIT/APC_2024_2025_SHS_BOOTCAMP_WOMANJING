@@ -130,14 +130,6 @@
                 android:textSize="16sp"
                 android:padding="4dp" />
 
-            <TextView
-                android:id="@+id/tv_countOfCrumbs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Waypoints Count"
-                android:textSize="16sp"
-                android:padding="4dp" />
-
             <Switch
                 android:id="@+id/sw_locationsupdates"
                 android:layout_width="match_parent"
