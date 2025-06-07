@@ -46,11 +46,12 @@ public class gc_schedule extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Edge to edge UI
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+
         setContentView(R.layout.gc_schedule);
 
         AppCompatImageButton backButton = findViewById(R.id.back_button);

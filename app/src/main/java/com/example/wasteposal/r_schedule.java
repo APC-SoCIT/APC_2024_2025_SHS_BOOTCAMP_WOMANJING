@@ -47,6 +47,7 @@ public class r_schedule extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
 
         setContentView(R.layout.r_schedule);
 

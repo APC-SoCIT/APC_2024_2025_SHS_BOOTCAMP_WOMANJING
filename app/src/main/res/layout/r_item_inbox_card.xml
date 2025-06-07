@@ -19,7 +19,7 @@
             android:id="@+id/StatusIcon"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/track_icon" />
+            android:src="@drawable/pending_icon" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -41,7 +41,7 @@
                 android:id="@+id/tvArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="This is a long complaint that should be truncated properly"
+                android:text="Message text"
                 android:textSize="16sp"
                 android:textColor="@color/darkestgreen"
                 android:textStyle="bold"

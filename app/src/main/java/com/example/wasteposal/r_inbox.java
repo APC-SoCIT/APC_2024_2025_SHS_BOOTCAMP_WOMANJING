@@ -189,17 +189,17 @@ public class r_inbox extends AppCompatActivity {
         // Color code based on status
         switch (status) {
             case "accepted":
-                tvStatus.setTextColor(Color.parseColor("#388E3C")); // dark green
-                icon.setImageResource(R.drawable.track_icon); // replace with your green check icon
+                tvStatus.setTextColor(Color.parseColor("#388E3C"));
+                icon.setImageResource(R.drawable.accepted_icon);
                 break;
             case "rejected":
-                tvStatus.setTextColor(Color.parseColor("#D32F2F")); // red
-                icon.setImageResource(R.drawable.track_icon); // replace with your red cross icon
+                tvStatus.setTextColor(Color.parseColor("#D32F2F"));
+                icon.setImageResource(R.drawable.rejected_icon);
                 break;
             case "pending":
             default:
-                tvStatus.setTextColor(Color.parseColor("#F9A825")); // amber
-                icon.setImageResource(R.drawable.track_icon); // replace with your default icon
+                tvStatus.setTextColor(Color.parseColor("#F9A825"));
+                icon.setImageResource(R.drawable.pending_icon);
                 break;
         }
 
@@ -220,7 +220,7 @@ public class r_inbox extends AppCompatActivity {
         tvTime.setText(formatTimestamp(ann.timestamp));
         tvArea.setText(ann.message);
         tvStatus.setText("Announcement");
-        icon.setImageResource(R.drawable.track_icon); // replace with a megaphone icon if available
+        icon.setImageResource(R.drawable.announcement);
 
         cardView.setOnClickListener(v -> {
             new AlertDialog.Builder(this)

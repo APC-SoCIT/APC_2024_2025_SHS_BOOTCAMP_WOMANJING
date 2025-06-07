@@ -167,16 +167,16 @@ public class gc_inbox extends AppCompatActivity {
         switch (status) {
             case "accepted":
                 tvStatus.setTextColor(Color.parseColor("#388E3C"));
-                icon.setImageResource(R.drawable.track_icon);
+                icon.setImageResource(R.drawable.accepted_icon);
                 break;
             case "rejected":
                 tvStatus.setTextColor(Color.parseColor("#D32F2F"));
-                icon.setImageResource(R.drawable.track_icon);
+                icon.setImageResource(R.drawable.rejected_icon);
                 break;
             case "pending":
             default:
                 tvStatus.setTextColor(Color.parseColor("#F9A825"));
-                icon.setImageResource(R.drawable.track_icon);
+                icon.setImageResource(R.drawable.pending_icon);
                 break;
         }
 
@@ -187,7 +187,7 @@ public class gc_inbox extends AppCompatActivity {
     private void showComplaintDialog(Complaint complaint, String residentAddress) {
         StringBuilder message = new StringBuilder();
 
-        message.append("From: ").append(residentAddress).append("\n\n");
+        message.append("Address: ").append(residentAddress).append("\n\n");
 
         if (complaint.message != null && !complaint.message.isEmpty()) {
             message.append("Complaint:\n").append(complaint.message).append("\n\n");
