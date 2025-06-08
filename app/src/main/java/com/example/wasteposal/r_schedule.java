@@ -17,7 +17,6 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +46,7 @@ public class r_schedule extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
 
         setContentView(R.layout.r_schedule);
 

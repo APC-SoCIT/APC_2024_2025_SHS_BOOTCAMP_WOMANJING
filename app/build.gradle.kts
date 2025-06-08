@@ -49,7 +49,6 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    // Explicitly add AndroidX core for insets & view compat APIs
     implementation("androidx.core:core:1.10.1")
 
     // Testing

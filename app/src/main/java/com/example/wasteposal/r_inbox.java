@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,7 +66,7 @@ public class r_inbox extends AppCompatActivity {
 
         dbRef = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
 
-        // Load the user address first
+        // Load the user address
         dbRef.child(city).child(barangay).child("User").child(userId).child("address")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -81,7 +80,6 @@ public class r_inbox extends AppCompatActivity {
                             }
                             userAddress = addressBuilder.toString().replaceAll(", $", "");
                         } else if (addressObj instanceof String) {
-                            // It's a simple string address
                             userAddress = (String) addressObj;
                         } else {
                             userAddress = "No address found";
@@ -189,17 +187,17 @@ public class r_inbox extends AppCompatActivity {
         // Color code based on status
         switch (status) {
             case "accepted":
-                tvStatus.setTextColor(Color.parseColor("#388E3C")); // dark green
-                icon.setImageResource(R.drawable.track_icon); // replace with your green check icon
+                tvStatus.setTextColor(Color.parseColor("#388E3C"));
+                icon.setImageResource(R.drawable.accepted_icon);
                 break;
             case "rejected":
-                tvStatus.setTextColor(Color.parseColor("#D32F2F")); // red
-                icon.setImageResource(R.drawable.track_icon); // replace with your red cross icon
+                tvStatus.setTextColor(Color.parseColor("#D32F2F"));
+                icon.setImageResource(R.drawable.rejected_icon);
                 break;
             case "pending":
             default:
-                tvStatus.setTextColor(Color.parseColor("#F9A825")); // amber
-                icon.setImageResource(R.drawable.track_icon); // replace with your default icon
+                tvStatus.setTextColor(Color.parseColor("#F9A825"));
+                icon.setImageResource(R.drawable.pending_icon);
                 break;
         }
 
@@ -220,7 +218,7 @@ public class r_inbox extends AppCompatActivity {
         tvTime.setText(formatTimestamp(ann.timestamp));
         tvArea.setText(ann.message);
         tvStatus.setText("Announcement");
-        icon.setImageResource(R.drawable.track_icon); // replace with a megaphone icon if available
+        icon.setImageResource(R.drawable.announcement);
 
         cardView.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
@@ -240,7 +238,6 @@ public class r_inbox extends AppCompatActivity {
             normalized = isoDate.substring(0, isoDate.length() - 1);
         }
 
-        // Try multiple date formats for robustness
         String[] possibleFormats = new String[] {
                 "yyyy-MM-dd'T'HH:mm:ss.SSS",
         };
