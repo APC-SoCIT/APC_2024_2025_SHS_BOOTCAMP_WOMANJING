@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,7 +66,7 @@ public class r_inbox extends AppCompatActivity {
 
         dbRef = FirebaseDatabase.getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
 
-        // Load the user address first
+        // Load the user address
         dbRef.child(city).child(barangay).child("User").child(userId).child("address")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -81,7 +80,6 @@ public class r_inbox extends AppCompatActivity {
                             }
                             userAddress = addressBuilder.toString().replaceAll(", $", "");
                         } else if (addressObj instanceof String) {
-                            // It's a simple string address
                             userAddress = (String) addressObj;
                         } else {
                             userAddress = "No address found";
@@ -240,7 +238,6 @@ public class r_inbox extends AppCompatActivity {
             normalized = isoDate.substring(0, isoDate.length() - 1);
         }
 
-        // Try multiple date formats for robustness
         String[] possibleFormats = new String[] {
                 "yyyy-MM-dd'T'HH:mm:ss.SSS",
         };

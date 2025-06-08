@@ -1,7 +1,6 @@
 package com.example.wasteposal;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -9,9 +8,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -132,7 +128,6 @@ public class gc_track extends AppCompatActivity {
         tv_sensor = findViewById(R.id.tv_sensor);
         tv_updates = findViewById(R.id.tv_updates);
         tv_address = findViewById(R.id.tv_address);
-        tv_wayPointCounts = findViewById(R.id.tv_countOfCrumbs);
 
         sw_gps = findViewById(R.id.sw_gps);
         sw_locationupdates = findViewById(R.id.sw_locationsupdates);
@@ -200,7 +195,6 @@ public class gc_track extends AppCompatActivity {
 
         MyApplication myApplication = (MyApplication) getApplicationContext();
         savedLocations = myApplication.getMyLocations();
-        tv_wayPointCounts.setText(String.valueOf(savedLocations.size()));
 
         uploadLocationToFirebase(location);
     }

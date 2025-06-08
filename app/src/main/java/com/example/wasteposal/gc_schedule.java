@@ -64,7 +64,7 @@ public class gc_schedule extends AppCompatActivity {
 
         if (city == null || barangay == null) {
             Toast.makeText(this, "Missing user location data", Toast.LENGTH_SHORT).show();
-            finish(); // Close screen if data is missing
+            finish();
             return;
         }
 
@@ -119,24 +119,24 @@ public class gc_schedule extends AppCompatActivity {
         day = day.trim().toLowerCase();
         switch (day) {
             case "sun":
-            case "sunday": return "Sunday";
+            return "Sunday";
             case "mon":
-            case "monday": return "Monday";
+            return "Monday";
             case "tue":
-            case "tuesday": return "Tuesday";
+            return "Tuesday";
             case "wed":
-            case "wednesday": return "Wednesday";
+            return "Wednesday";
             case "thu":
-            case "thursday": return "Thursday";
+            return "Thursday";
             case "fri":
-            case "friday": return "Friday";
+            return "Friday";
             case "sat":
-            case "saturday": return "Saturday";
+            return "Saturday";
             default: return "";
         }
     }
 
-    // Organizes schedule by day, time, and area
+    // Organizes schedule by day
     private void displayGroupedSchedule(Map<String, List<AreaSchedule>> groupedData) {
         scheduleContainer.removeAllViews();
 
@@ -247,7 +247,7 @@ public class gc_schedule extends AppCompatActivity {
                     break;
             }
 
-            // Build confirmation message
+            // Confirmation message
             String message;
             switch (nextStatus) {
                 case "in-progress":
