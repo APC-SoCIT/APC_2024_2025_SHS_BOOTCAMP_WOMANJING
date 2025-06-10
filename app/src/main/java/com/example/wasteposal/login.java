@@ -62,28 +62,34 @@ public class login extends AppCompatActivity {
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference();
 
+// Find the views in the layout
         mobileNumEditText = findViewById(R.id.mobilenum);
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         dontHaveAccount = findViewById(R.id.dontHaveAccount);
 
+// When the login button is clicked
         loginButton.setOnClickListener(v -> {
             String mobile = mobileNumEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
+            // Make sure mobile number isn't empty
             if (TextUtils.isEmpty(mobile)) {
                 mobileNumEditText.setError("Mobile number is required");
                 return;
             }
 
+            // Make sure password isn't empty
             if (TextUtils.isEmpty(password)) {
                 passwordEditText.setError("Password is required");
                 return;
             }
 
+            // Try to find the user with the given mobile and password
             findUserByMobile(mobile, password);
         });
 
+// If the user doesn't have an account, send them to the signup page
         dontHaveAccount.setOnClickListener(v -> {
             startActivity(new Intent(login.this, signup.class));
         });
@@ -115,10 +121,12 @@ public class login extends AppCompatActivity {
                                 if (mobile.equals(storedMobile)) {
                                     found = true;
 
+                                    // Verify password
                                     if (storedPassword != null && storedPassword.equals(inputPassword)) {
                                         String userId = userSnapshot.getKey();
                                         String address = userSnapshot.child("address").getValue(String.class);
 
+                                        // Save user info locally for session management
                                         getSharedPreferences("UserPrefs", MODE_PRIVATE)
                                                 .edit()
                                                 .putString("userId", userId)
@@ -128,6 +136,7 @@ public class login extends AppCompatActivity {
                                                 .putBoolean("isLoggedIn", true)
                                                 .apply();
 
+                                        // Direct user based on their role
                                         if ("collector".equalsIgnoreCase(role)) {
                                             Toast.makeText(login.this, "Collector login successful", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(login.this, gc_dashboard.class));
@@ -136,8 +145,9 @@ public class login extends AppCompatActivity {
                                             startActivity(new Intent(login.this, r_dashboard.class));
                                         }
 
-                                        finish();
+                                        finish(); // Close login activity
                                     } else {
+                                        // Wrong password entered
                                         Toast.makeText(login.this, "Incorrect password", Toast.LENGTH_SHORT).show();
                                     }
                                     break;
@@ -147,6 +157,7 @@ public class login extends AppCompatActivity {
                     }
                 }
 
+                // If after searching all cities and barangays no user was found
                 if (!found) {
                     Toast.makeText(login.this, "User not found", Toast.LENGTH_SHORT).show();
                 }
@@ -154,6 +165,7 @@ public class login extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
+                // Handle database errors here
                 Toast.makeText(login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

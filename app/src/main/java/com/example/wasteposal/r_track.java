@@ -155,10 +155,13 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     }
 
     private void enableMyLocation() {
+        // Check if location permission is already granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
+            // If yes, enable the blue dot on the map showing user's location
             mMap.setMyLocationEnabled(true);
         } else {
+            // If not, ask the user to grant location permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
@@ -180,10 +183,12 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
                 Double latitude = snapshot.child("latitude").getValue(Double.class);
                 Double longitude = snapshot.child("longitude").getValue(Double.class);
 
+                // If both coordinates are available, update the marker on the map
                 if (latitude != null && longitude != null) {
                     LatLng collectorLocation = new LatLng(latitude, longitude);
                     updateCollectorMarker(collectorLocation);
                 } else {
+                    // If no location data, notify the user
                     Toast.makeText(r_track.this, "Collector location not available", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -215,11 +220,15 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Check if the location permission request was granted
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
                 grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // If permission granted, enable showing user's location on the map
             enableMyLocation();
         } else {
+            // If permission denied, let the user know location features won't work
             Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
         }
     }

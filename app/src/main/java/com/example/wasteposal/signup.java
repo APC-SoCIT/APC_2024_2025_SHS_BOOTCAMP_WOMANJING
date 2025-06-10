@@ -30,7 +30,8 @@ public class signup extends AppCompatActivity {
     private ArrayList<String> cityList = new ArrayList<>();
     private ArrayList<String> barangayList = new ArrayList<>();
     private ArrayAdapter<String> cityAdapter, barangayAdapter;
-//To initialize signup screen
+
+    //To initialize signup screen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,8 @@ public class signup extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
         // From Signup to Login screen
         TextView alreadyHaveAccount = findViewById(R.id.alreadyHaveAccount);
@@ -73,7 +75,8 @@ public class signup extends AppCompatActivity {
 
         findViewById(R.id.SignupButton).setOnClickListener(this::signup);
     }
-// Fetch City from database
+
+    // Fetch City from database
     private void loadCitiesFromFirebase() {
         DatabaseReference rootRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
@@ -93,12 +96,12 @@ public class signup extends AppCompatActivity {
     }
 
 
-// Fetch Barangay from database
+    // Fetch Barangay from database
     private void loadBarangaysFromFirebase(String city) {
         DatabaseReference barangayRef = FirebaseDatabase
                 .getInstance("https://wasteposal-c1fe3afa-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference()
-                .child(city);  // No "Locations"
+                .child(city);
 
         barangayRef.get().addOnSuccessListener(snapshot -> {
             barangayList.clear();
@@ -114,7 +117,7 @@ public class signup extends AppCompatActivity {
         });
     }
 
-// Normal Signup process
+    // Normal Signup process
     public void signup(View view) {
         String mobile = mobileField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
@@ -125,10 +128,8 @@ public class signup extends AppCompatActivity {
         if (mobile.isEmpty() || password.isEmpty() || address.isEmpty() || city.isEmpty() || barangay.isEmpty()) {
             Toast.makeText(this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        else if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+        } else if (password.length() < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
             return;
         }
 //Generates a user ID and adds the user information to the database after validating
@@ -140,36 +141,43 @@ public class signup extends AppCompatActivity {
                 .child("User");
 
         userRef.get().addOnSuccessListener(snapshot -> {
+            // Get how many users are already in the database
             long count = snapshot.getChildrenCount();
+            // Create a new user ID by adding 1 to the count (like 01-0001)
             long nextNumber = count + 1;
-            String userId = String.format("01-%04d", nextNumber); // Format: 01-0001
+            String userId = String.format("01-%04d", nextNumber);
 
+            // Put user info into a map to save
             HashMap<String, Object> userData = new HashMap<>();
             userData.put("address", address);
             userData.put("mobile", mobile);
             userData.put("password", password);
             userData.put("role", "resident");
 
+            // Save this new user data under the new user ID
             userRef.child(userId)
                     .setValue(userData)
                     .addOnSuccessListener(unused -> {
-                        // Save to SharedPreferences
+                        // On success, save some user info locally
                         getSharedPreferences("UserPrefs", MODE_PRIVATE)
                                 .edit()
                                 .putString("city", city)
                                 .putString("barangay", barangay)
                                 .putString("userId", userId)
                                 .apply();
+
+                        // Show success message and go to login screen
                         Toast.makeText(signup.this, "Signup Successful", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(signup.this, login.class));
                         finish();
                     })
-
                     .addOnFailureListener(e -> {
+                        // If saving fails, show error message
                         Toast.makeText(signup.this, "Database write failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
 
         }).addOnFailureListener(e -> {
+            // If reading users fails, show error message
             Toast.makeText(signup.this, "Failed to read users: " + e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
