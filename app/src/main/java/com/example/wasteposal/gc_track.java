@@ -103,7 +103,7 @@ public class gc_track extends AppCompatActivity {
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 tv_sensor.setText("Using GPS sensors");
             } else {
-                // Use less battery-draining sources like WiFi and cell towers
+                // Use sources like WiFi and cell towers
                 locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 tv_sensor.setText("Using Towers + WIFI");
             }

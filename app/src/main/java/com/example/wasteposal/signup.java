@@ -128,8 +128,8 @@ public class signup extends AppCompatActivity {
         if (mobile.isEmpty() || password.isEmpty() || address.isEmpty() || city.isEmpty() || barangay.isEmpty()) {
             Toast.makeText(this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
             return;
-        } else if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+        } else if (password.length() < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
             return;
         }
 //Generates a user ID and adds the user information to the database after validating
