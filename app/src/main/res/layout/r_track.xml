@@ -35,7 +35,7 @@
         android:layout_marginEnd="15dp"
         android:scaleType="fitCenter"
         android:src="@drawable/faq_icon"
-        android:background="transparent"/>
+        android:background="#00000000"/>
 
     <LinearLayout
         android:id="@+id/bottom_panel"

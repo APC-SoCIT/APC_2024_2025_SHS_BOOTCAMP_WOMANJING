@@ -55,7 +55,7 @@ public class gc_track extends AppCompatActivity {
 
     private final String city = "Makati";
     private final String barangay = "Magallanes";
-    private final String collectorId = "01-0002";
+    private final String collectorId = "02-0001";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
