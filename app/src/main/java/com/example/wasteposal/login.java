@@ -10,12 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 
 import com.google.firebase.database.*;
 
@@ -67,6 +69,30 @@ public class login extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         dontHaveAccount = findViewById(R.id.dontHaveAccount);
+
+// FAQ button ngani
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    login.this,
+                    "<b>• Step 1: Enter your mobile number</b><br>" +
+                            "- Tap the box that says “+63 *** *** ****”<br>" +
+                            "- Type the phone number you used when you first signed up.<br><br>" +
+
+                            "<b>• Step 2: Enter your password</b><br>" +
+                            "- Tap the box under “Password”<br>" +
+                            "- Type the password you created during sign-up.<br><br>" +
+
+                            "<b>• Step 3: Tap the green “Login” button</b><br>" +
+                            "- This checks if your mobile number and password are correct.<br>" +
+                            "- If correct, you will be taken to your dashboard (Resident or Garbage Collector).<br><br>" +
+
+                            "<b>• Don’t have an account yet?</b><br>" +
+                            "- Tap the sentence that says “Don’t have an account?”<br>" +
+                            "- You’ll be taken to the Signup screen to create your account.",
+                    R.drawable.faq_icon
+            );
+        });
 
 // When the login button is clicked
         loginButton.setOnClickListener(v -> {

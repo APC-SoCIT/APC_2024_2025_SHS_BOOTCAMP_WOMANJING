@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,6 +72,35 @@ public class r_schedule extends AppCompatActivity {
         Toast.makeText(this, "Loading schedule...", Toast.LENGTH_SHORT).show();
 
         loadScheduleData();
+
+        // FAQ button ngani
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    r_schedule.this,
+                    "<b>• View Daily Schedules</b><br>" +
+                            "- The screen shows garbage collection grouped by day (Sunday to Saturday).<br>" +
+                            "- Each section lists areas and the scheduled time for pickup.<br><br>" +
+
+                            "<b>• Understand Status Icons</b><br>" +
+                            "- <b>Scheduled</b>: Collection is planned for this area.<br>" +
+                            "- <b>In-Progress</b>: The truck is currently servicing this area.<br>" +
+                            "- <b>Done</b>: Collection has been completed.<br><br>" +
+
+                            "<b>• Sort by Time</b><br>" +
+                            "- Areas are sorted by their starting time (e.g., 7:00 AM to 9:00 AM).<br>" +
+                            "- The list updates automatically as new schedules are posted.<br><br>" +
+
+                            "<b>• Data Not Loading?</b><br>" +
+                            "- Make sure you are connected to the internet.<br>" +
+                            "- If schedules don't appear, your barangay may not have uploaded them yet.<br><br>" +
+
+                            "<b>• Need Help?</b><br>" +
+                            "- Contact your barangay admin if your area is missing or the data looks wrong.",
+                    R.drawable.faq_icon
+            );
+        });
+
     }
 
     private void loadScheduleData() {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +53,33 @@ public class r_inbox extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         inboxContainer = findViewById(R.id.inboxContainer);
+
+        // FAQ button ngani
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    r_inbox.this,
+                    "<b>• View Announcements</b><br>" +
+                            "- Announcements from your barangay will appear here.<br>" +
+                            "- These are matched based on your address.<br><br>" +
+
+                            "<b>• Check Complaint Status</b><br>" +
+                            "- Your complaints will be listed below any announcements.<br>" +
+                            "- Each one shows the status: <b>Pending</b>, <b>Accepted</b>, or <b>Rejected</b>.<br>" +
+                            "- Tap a card to read full complaint and admin response.<br><br>" +
+
+                            "<b>• Status Colors</b><br>" +
+                            "- <b>Pending</b>: Awaiting review.<br>" +
+                            "- <b>Accepted</b>: Approved with a response.<br>" +
+                            "- <b>Rejected</b>: Declined with a reason.<br><br>" +
+
+                            "<b>• Not Seeing Anything?</b><br>" +
+                            "- Make sure your address in your profile is correct.<br>" +
+                            "- Only messages for your area will be shown here.<br>" +
+                            "- Try again later or contact your barangay for updates.",
+                    R.drawable.faq_icon
+            );
+        });
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = prefs.getString("userId", null);

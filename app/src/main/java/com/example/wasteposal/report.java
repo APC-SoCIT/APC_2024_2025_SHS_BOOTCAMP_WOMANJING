@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,30 @@ public class report extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
             finish();
+        });
+
+        // FAQ button ngani
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    report.this,
+                    "<b>• Write Your Complaint</b><br>" +
+                            "- Clearly describe the issue (e.g., uncollected garbage, broken bin, etc.).<br>" +
+                            "- Be specific so the barangay can respond properly.<br><br>" +
+
+                            "<b>• Submit the Form</b><br>" +
+                            "- Tap <b>Submit</b> to send your complaint.<br>" +
+                            "- You will see a confirmation once it is successfully sent.<br><br>" +
+
+                            "<b>• Wait for Review</b><br>" +
+                            "- Your complaint will show as <b>Pending</b> under the Inbox screen.<br>" +
+                            "- Once reviewed, it will be marked as <b>Accepted</b> or <b>Rejected</b> with remarks.<br><br>" +
+
+                            "<b>• Need Help?</b><br>" +
+                            "- Make sure your account info and address are correct.<br>" +
+                            "- If you continue to experience problems, contact your barangay admin.",
+                    R.drawable.faq_icon
+            );
         });
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);

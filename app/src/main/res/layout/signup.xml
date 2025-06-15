@@ -57,14 +57,14 @@
                         android:textSize="16sp" />
 
                     <ImageButton
-                        android:id="@+id/faqIcon"
+                        android:clickable="true"
+                        android:id="@+id/helpButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="FAQ"
-                        android:src="@drawable/faq_icon"
-                        android:padding="4dp"
                         android:layout_marginStart="8dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/faq_icon"
+                        android:contentDescription="Help"
                         android:scaleType="fitCenter" />
                 </LinearLayout>
 

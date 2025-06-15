@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +55,38 @@ public class signup extends AppCompatActivity {
         addressField = findViewById(R.id.editTextAddress);
         spinnerCity = findViewById(R.id.spinnerCity);
         spinnerBarangay = findViewById(R.id.spinnerBarangay);
+
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    signup.this,
+                    "<b>• Step 1: Select your Current City</b><br>" +
+                            "- Tap the dropdown that says “Please Select”<br>" +
+                            "- Choose the city where you live from the list.<br><br>" +
+
+                            "<b>• Step 2: Select your Registered Barangay</b><br>" +
+                            "- After selecting your city, tap the next dropdown.<br>" +
+                            "- Choose the correct barangay from the list.<br><br>" +
+
+                            "<b>• Step 3: Enter your Home Address</b><br>" +
+                            "- Type your complete address (Lot, Block, Street, Subdivision).<br>" +
+                            "- This helps us know exactly where to collect your garbage.<br><br>" +
+
+                            "<b>• Step 4: Enter your Mobile Number</b><br>" +
+                            "- Tap the box that says “+63 *** *** ****”<br>" +
+                            "- Enter your phone number that you will use to log in later.<br><br>" +
+
+                            "<b>• Step 5: Create a Password</b><br>" +
+                            "- Tap the box that says “Minimum of 8 characters”<br>" +
+                            "- Type a password you can remember. It should be at least 8 characters long.<br><br>" +
+
+                            "<b>• Step 6: Tap the green “Sign up” button</b><br>" +
+                            "- This will create your account.<br>" +
+                            "- If everything is correct, you will be taken to your dashboard.",
+                    R.drawable.faq_icon
+            );
+        });
+
 //Sets up spinner selection
         loadCitiesFromFirebase();
         spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

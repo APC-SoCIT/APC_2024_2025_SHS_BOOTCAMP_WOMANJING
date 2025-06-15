@@ -64,6 +64,31 @@ public class r_track extends FragmentActivity implements OnMapReadyCallback {
         locationLabel = findViewById(R.id.location_label);
         currentArea = findViewById(R.id.current_area);
 
+        // FAQ button ngani
+        ImageButton helpButton = findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(v -> {
+            FAQDialogHelper.showFAQ(
+                    r_track.this,
+                    "<b>• Track the Garbage Truck</b><br>" +
+                            "- This screen shows the real-time location of the garbage truck on the map.<br>" +
+                            "- You will see a green garbage truck icon representing the current location.<br><br>" +
+
+                            "<b>• Read the Status Panel</b><br>" +
+                            "- <b>Status:</b> Shows if a collection is happening now.<br>" +
+                            "- <b>Time:</b> Displays the expected pickup time for the area.<br>" +
+                            "- <b>Area:</b> Tells you which area is currently being served.<br><br>" +
+
+                            "<b>• Location Permission</b><br>" +
+                            "- Make sure you allow location access so you can see your location on the map.<br><br>" +
+
+                            "<b>• Can't See the Truck?</b><br>" +
+                            "- Check your internet connection.<br>" +
+                            "- The truck might not have started collection yet.<br>" +
+                            "- Contact your barangay admin if location is always missing.",
+                    R.drawable.faq_icon
+            );
+        });
+
         fetchInProgressSchedule();
 
         // Set up map
