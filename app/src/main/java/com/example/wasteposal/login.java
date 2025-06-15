@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
 import com.google.firebase.database.*;
 
 public class login extends AppCompatActivity {
